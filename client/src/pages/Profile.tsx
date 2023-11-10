@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react'
 import { useAppSelector } from '../app/hooks'
 
 import { serverUrl } from '../conf/conf';
-import { Params, useParams } from 'react-router-dom'
+import { Params, useParams,useNavigate } from 'react-router-dom'
 import axios from 'axios';
 
 import {BsPencilFill, BsHeart} from 'react-icons/bs'
@@ -13,7 +13,8 @@ type User =
   email:string
   profile_picture:string
   _id:string,
-  blogs:string[]
+  blogs:string[],
+  bio:string
 }
 // type Blog = {
 //   title:string,
@@ -21,37 +22,41 @@ type User =
 //   image:string,
 //   likes:number,
 //   createdAt: string,
-  
 // }
 const Profile = () => {
-
-    
     const {userId}  = useParams<Readonly<Params<string>>>();
     const [user,setUser] = useState<User|null>(null);
     const [userFound,setUserFound] =  useState<boolean>(true);
 
     const loggedInUser = useAppSelector((state) => state.auth.user);
     const[ownAcc,setOwnAcc] = useState<boolean>(false);
+
+    const navigate = useNavigate();
+
     const fetchUser = async() => {
       try {
         const res = await axios.get(serverUrl+"/api/user/"+userId);
         setUser(res.data.user)
        
       } catch (error){
-          setUser({user_name:"",email:"",profile_picture:"",_id:"",blogs:[]});
+          setUser({user_name:"",email:"",profile_picture:"",_id:"",blogs:[],bio:''});
           setUserFound(false);
       }
+    }
+    const handleEditClick = ()=>{
+        navigate("/user/update/"+user?._id)
     }
     useEffect(() => {
         fetchUser();
     }, [])
     useEffect(()=>{
       if( loggedInUser && user && loggedInUser?._id===user?._id) setOwnAcc(true);
+      console.log(user)
     },[user])
     
   return (
     <div>
-        {!userFound && <h1>User not Found :| </h1> }
+        {!userFound && <h1>User not Found :| </h1>  }
         { !user  && <h1>Loading....</h1> }
         { user && <div className='flex items-center justify-center bg-slate-100 py-4'>
           <div className='w-[40%]'>
@@ -61,7 +66,8 @@ const Profile = () => {
 
           <h1 className='text-2xl'>{user.user_name}</h1>
           <h4 className='text-sm'> {user.email}</h4>
-          {ownAcc ? <div className='flex space-x-2'><button className='btn-primary1'>Edit &nbsp;<BsPencilFill/> </button> <button className='btn-primary1'>View Fav &nbsp; <BsHeart/> </button> </div>: <></>}
+          <p>{user.bio}</p>
+          {ownAcc ? <div className='flex space-x-2'><button className='btn-primary1' onClick={handleEditClick}>Edit &nbsp;<BsPencilFill/> </button> <button className='btn-primary1'>View Fav &nbsp; <BsHeart/> </button> </div>: <></>}
 
 
           </div>

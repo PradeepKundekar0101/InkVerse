@@ -19,5 +19,5 @@
 }
 
 .btn-primary1{
-    @apply rounded-md capitalize bg-blue-600 text-white flex items-center justify-center w-24 py-1
+    @apply rounded-md capitalize bg-blue-600 text-white flex items-center justify-center w-36 py-1
 }

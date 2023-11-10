@@ -5,6 +5,8 @@ import SignIn from './pages/SignIn.js'
 import Profile from './pages/Profile.js'
 import Home from './pages/Home.js'
 import { useAppSelector } from './app/hooks.js'
+import UpdateProfile from './pages/UpdateProfile.js'
+import AddBlog from './pages/AddBlog.js'
 const App = () => {
     const user =  useAppSelector((state)=>{ return state.auth.user })
     const router = createBrowserRouter(createRoutesFromElements(
@@ -13,6 +15,10 @@ const App = () => {
              <Route path='signin' element={!user?<SignIn/>:<Navigate to="/"/>}/>
             <Route path='signup' element={<SignUp/>}/>
             <Route path='user/:userId' element={<Profile/>}/> 
+            <Route path='user/update/:userId' element={<UpdateProfile/>}/> 
+
+            <Route path='blog/addblog' element={<AddBlog/>} />
+
         </Route>
       ))  
   return (

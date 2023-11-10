@@ -10,7 +10,7 @@ const UserSchema = mongoose.Schema({
         default:"https://shorturl.at/syBDS",
         type:String
     },
-    email:{
+    email:{ 
         type:String,
         require:true,
         unique: true,
@@ -21,6 +21,10 @@ const UserSchema = mongoose.Schema({
     blogs:{
         type:[],
         default:[]
+    },
+    bio:{
+        type:String,
+        default:""
     }
 },{
     timeStamps:true

@@ -1,6 +1,6 @@
 import { useState} from 'react'
-// @ts-ignore
-import {storage,provider,auth} from '../firebase.js'
+
+import {provider,auth} from '../firebase.ts'
 
 import {serverUrl} from '../conf/conf'
 import {signInWithPopup} from "firebase/auth";
