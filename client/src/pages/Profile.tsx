@@ -35,9 +35,10 @@ const Profile = () => {
 
     const fetchUser = async() => {
       try {
-        const res = await axios.get(serverUrl+"/api/user/"+userId);
+        const url = serverUrl+"/api/user/id/"+userId
+        const res = await axios.get(url);
         setUser(res.data.user)
-       
+       console.log(res.data)
       } catch (error){
           setUser({user_name:"",email:"",profile_picture:"",_id:"",blogs:[],bio:''});
           setUserFound(false);
@@ -48,10 +49,11 @@ const Profile = () => {
     }
     useEffect(() => {
         fetchUser();
+
     }, [])
     useEffect(()=>{
       if( loggedInUser && user && loggedInUser?._id===user?._id) setOwnAcc(true);
-      console.log(user)
+      console.log(user?.profile_picture)
     },[user])
     
   return (
@@ -60,7 +62,7 @@ const Profile = () => {
         { !user  && <h1>Loading....</h1> }
         { user && <div className='flex items-center justify-center bg-slate-100 py-4'>
           <div className='w-[40%]'>
-          <img src={user.profile_picture}  alt="" className='rounded-full h-32 w-32'/> 
+         { user.profile_picture && <img src={String(user.profile_picture)}  alt="" className='rounded-full h-32 w-32'/> }
           </div>
           <div className='w-[60%]'>
 

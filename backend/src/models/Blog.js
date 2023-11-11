@@ -16,12 +16,19 @@ const BlogSchema = mongoose.Schema({
    author:{
     type: String,
    },
-   slug: {
-    type: String,
-    unique: true,
-    required: true,
-  },
-  tags: [String]
+   likes:{
+      type:Number,
+      default:0
+   },
+  tags:
+    {
+      type:[String],
+      default:[]
+    },
+    category:{
+      type:String,
+     
+    }
 },{
     timestamps: true, 
   } )

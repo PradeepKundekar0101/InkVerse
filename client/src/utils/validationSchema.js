@@ -17,8 +17,6 @@ export const blogSchema = yup.object().shape({
 
   content: yup.string().required('Content is required').min(10, 'Content must be at least 10 characters'),
 
-  image: yup.string().url('Invalid image URL').required('Image URL is required'),
-
   tags: yup
     .array()
     .of(yup.string().min(2, 'Tag must be at least 2 characters').max(20, 'Tag must not exceed 20 characters'))

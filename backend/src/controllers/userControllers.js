@@ -1,5 +1,4 @@
 import { User } from "../models/User.js"
-import {authenticateToken} from '../middleware/verifyToken.js'
 import bcrypt from "bcryptjs"
 import jwt  from "jsonwebtoken"
 import dotenv from 'dotenv'
@@ -80,13 +79,34 @@ export const getUser =async (req,res)=>{
 }
 
 export const updateUser = async(req,res)=>{
-  console.log("first")
   try {
-    const userId = req.params.userId;
-    const updatedUser = await User.findByIdAndUpdate(userId,req.body)
+    const paramsUserId = req.params.userId;
+    const tokenUserId = req.user.userId;
+    if(paramsUserId === tokenUserId)
+    {
+      const updatedUser = await User.findByIdAndUpdate(paramsUserId,req.body)
       res.status(200).json({ message:"User registered successfully",user:updatedUser});
+    }
+    else{
+    
+      res.status(401).json({message:"Not Allowed"});
+    }
    } catch (error) {
-    console.log(error.message)
+    
       res.status(500).json({message:"Error registering user "+error});
    }
+}
+
+export const getUserByName = async (req,res)=>{
+  try {
+    const userName = req.params.userName;
+    // const userHeader
+    const userFound = await User.findOne({user_name:userName});
+    if(userFound)
+      return res.status(200).json({message:"User name is already taken",success:false})
+    return res.status(200).json({message:"No user name found",success:true})
+    
+  } catch (error) {
+    
+  }
 }
