@@ -3,8 +3,9 @@ type User={
     user_name: string
     email: string
     profile_picture: string
-    _id:string
-    blogs:string[]
+    _id:string,
+    // blogs: Map<string,boolean>
+    // likes: Map<string,boolean>
 }
 type initialStateType ={
     token :string | null 
@@ -18,8 +19,8 @@ const authSlice = createSlice({
     name:"auth",
     initialState,
     reducers:{
-       
         login : (state,action:PayloadAction<initialStateType>)=>{
+          
             state.token = action.payload.token;
             state.user =action.payload.user;
         },

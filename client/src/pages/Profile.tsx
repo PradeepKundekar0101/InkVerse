@@ -13,8 +13,8 @@ type User =
   email:string
   profile_picture:string
   _id:string,
-  blogs:string[],
   bio:string
+  blogs:string[]
 }
 // type Blog = {
 //   title:string,
@@ -76,9 +76,9 @@ const Profile = () => {
           
           </div> }
           <h1>Your Posts</h1>
-          {user?.blogs?.map((e:any,i:number)=>{ return (
+          {/* {user?.blogs?.map((e:any,i:number)=>{ return (
             <BlogCard key={i} title={e.title} image={e.image} content={e.content} createdAt={e.createdAt} likes={e.likes} />
-          )})}
+          )})} */}
     </div>
   )
 }

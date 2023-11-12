@@ -28,7 +28,16 @@ const BlogSchema = mongoose.Schema({
     category:{
       type:String,
      
-    }
+    },
+    views:{
+      type:Number,
+      default:0
+    },
+    comments:
+      [{
+        type: String
+    }]
+    
 },{
     timestamps: true, 
   } )

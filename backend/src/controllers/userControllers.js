@@ -107,6 +107,51 @@ export const getUserByName = async (req,res)=>{
     return res.status(200).json({message:"No user name found",success:true})
     
   } catch (error) {
+    res.status(500).json({message:error.message});
+  }
+}
+
+export const checkLiked = async(req,res)=>{
+  try {
+    const userId = req.params.userId;
+    const blogId = req.params.blogId;
+    const user = await User.findById(userId);
+    if(!user) res.status(404).json({data:"User not Found"});
+    let liked =false;
+    if(user.likes.has(blogId)) liked=true;
+    res.status(200).json({data:liked});
     
+  } catch (error) {
+    res.status(500).json({message:error.message});
+  }
+}
+export const likeBlog = async (req,res)=>{
+  try {
+    const userId = req.params.userId;
+    const blogId = req.params.blogId;
+    const user = await User.findById(userId);
+    if(!user) res.status(404).json({data:"User not Found"});
+    user.likes.set(blogId,true);
+    const updatedUser = await user.save()
+    res.status(200).json({data:updatedUser});
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message:error.message});
+  }
+}
+export const dislikeBlog =async(req,res)=>{
+  try {
+    const userId = req.params.userId;
+    const blogId = req.params.blogId;
+    const user = await User.findById(userId);
+    if(!user) res.status(404).json({data:"User not Found"});
+    user.likes.delete(blogId);
+    const updatedUser = await user.save()
+    res.status(200).json({data:updatedUser});
+    
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({message:error.message});
   }
 }

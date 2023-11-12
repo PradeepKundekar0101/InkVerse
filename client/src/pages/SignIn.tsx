@@ -36,6 +36,8 @@ const SignIn = () => {
           {
             alert("Login Successfull");
             const {token,user} =response.data;
+            // user.likes = new Map();
+            // user.blogs = new Map();
             dispatch( login({token,user}) )
           }
           
@@ -56,6 +58,11 @@ const SignIn = () => {
           {
             alert("Login Successfull");
             const {token,user} =response.data;
+            user.likes = new Map();
+            user.blogs = new Map();
+            console.log(user);
+            console.log(user.likes instanceof Map);
+            console.log(user.blogs instanceof Map);
             dispatch( login({token,user}) )
             
           }

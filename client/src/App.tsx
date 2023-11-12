@@ -8,6 +8,7 @@ import { useAppSelector } from './app/hooks.js'
 import UpdateProfile from './pages/UpdateProfile.js'
 import AddBlog from './pages/AddBlog.js'
 import AllBlogs from './pages/AllBlogs.js'
+import SingleBlog from './pages/SingleBlog.js'
 const App = () => {
     const user =  useAppSelector((state)=>{ return state.auth.user })
     const router = createBrowserRouter(createRoutesFromElements(
@@ -20,6 +21,7 @@ const App = () => {
 
             <Route path='blog/addblog' element={<AddBlog/>} />
             <Route path='blog/explore' element={<AllBlogs/>} />
+            <Route path='blog/:blogId' element={<SingleBlog/>} />
 
         </Route>
       ))  

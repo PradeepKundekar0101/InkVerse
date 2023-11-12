@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { Mongoose } from "mongoose"
 const UserSchema = mongoose.Schema({
     user_name:{
         type:String,
@@ -19,12 +19,18 @@ const UserSchema = mongoose.Schema({
         type:String
     },
     blogs:{
-        type:[],
-        default:[]
+        type:Map,
+        of:Boolean,
+        default:{}
     },
     bio:{
         type:String,
         default:""
+    },
+    likes:{
+        type: mongoose.Schema.Types.Map,
+        of:Boolean,
+        default:{}
     }
 },{
     timeStamps:true

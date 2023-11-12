@@ -14,6 +14,7 @@ const AllBlogs = () => {
         author:string
         createdAt:Date
         category:string
+        _id:string
         
     }
     const [pageNo,setPageNo]= useState<number>(1);
@@ -50,9 +51,9 @@ const AllBlogs = () => {
         <h1>All Blogs</h1>
         <div className='container mx-auto'>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
-
+                
         {blogs.length >0  && blogs.map((blog,ind)=>(
-                <BlogCard key={ind} author={blog.author} category={blog.category} title={blog.title} content={blog.content} image={blog.image} likes={blog.likes} createdAt={blog.createdAt} />
+                <BlogCard blogId={blog._id} key={ind} author={blog.author} category={blog.category} title={blog.title} content={blog.content} image={blog.image} likes={blog.likes} createdAt={blog.createdAt} />
             ))}
             </div>
         </div>

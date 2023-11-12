@@ -1,6 +1,6 @@
 import {useRef,useState} from 'react'
 //@ts-ignore
-import {blogSchema} from './../utils/validationSchema.js'
+import {blogSchema} from '../utils/validationSchema.js'
 import {Formik,Form,Field} from 'formik'
 import {MdCancel} from 'react-icons/md'
 import {AiOutlineCloudUpload} from 'react-icons/ai'
@@ -25,7 +25,7 @@ type initialValuesType ={
     tagsInput:string,
     category:string
 }
-const AddBlog = () => {
+const UpdateBlog = () => {
     const token = useAppSelector((state)=>{return state.auth.token});
     const [imageUrl, setImageUrl] = useState<string>("https://tinyurl.com/2b8um47r");
     const [image, setImage] = useState<File|null>(null);
@@ -213,4 +213,4 @@ const AddBlog = () => {
   )
 }
 
-export default AddBlog
+export default UpdateBlog
