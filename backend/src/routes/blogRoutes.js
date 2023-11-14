@@ -1,12 +1,16 @@
 import express from "express"
 import {authenticateToken} from '../middleware/verifyToken.js'
-import {addBlog, getAllBlogs, getBlogById, getTotalNoOfBlogs,likeBlog,dislikeBlog,viewBlog,getComments,postComment} from '../controllers/blogControllers.js'
+import {addBlog, getAllBlogs, getBlogById, getTotalNoOfBlogs,likeBlog,dislikeBlog,viewBlog,getComments,postComment,updateBlog,deleteBlog,getBlogByUserId,getMostLiked} from '../controllers/blogControllers.js'
 const router = express.Router();
 
-router.post("/post",authenticateToken,addBlog);
-router.get("/all",getAllBlogs);
-router.get("/totalDocs",getTotalNoOfBlogs);
-router.get("/:blogId",getBlogById);
+router.post("/post",authenticateToken,addBlog); //Add Blog
+router.get("/all",getAllBlogs);   //Get all Blogs
+router.get("/totalDocs",getTotalNoOfBlogs); //Get Total Count
+router.get("/:blogId",getBlogById); //Get Blog By Id
+router.get("/user/:userId",getBlogByUserId); //Get Blog By UserId
+router.get("/get/mostLiked",getMostLiked); //GET most liked blog
+router.put("/update/:blogId",authenticateToken,updateBlog) //Update
+router.delete("/:blogId",authenticateToken,deleteBlog) //Update
 
 //Social Routes
 router.put("/like/:blogId",authenticateToken,likeBlog);

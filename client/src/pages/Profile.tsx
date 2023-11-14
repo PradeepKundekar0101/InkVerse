@@ -16,16 +16,19 @@ type User =
   bio:string
   blogs:string[]
 }
-// type Blog = {
-//   title:string,
-//   content:string,
-//   image:string,
-//   likes:number,
-//   createdAt: string,
-// }
+type Blog = {
+  title:string,
+  image:string,
+  likes:number,
+  category:string,
+  createdAt: Date,
+  _id:string
+  views:number
+}
 const Profile = () => {
     const {userId}  = useParams<Readonly<Params<string>>>();
     const [user,setUser] = useState<User|null>(null);
+    const [blogs,setBlogs] = useState<Blog[]|null>(null);
     const [userFound,setUserFound] =  useState<boolean>(true);
 
     const loggedInUser = useAppSelector((state) => state.auth.user);
@@ -47,9 +50,21 @@ const Profile = () => {
     const handleEditClick = ()=>{
         navigate("/user/update/"+user?._id)
     }
+    const fetchBlogs =async()=>{
+      try {
+        const url = serverUrl+"/api/blog/user/"+userId
+        const res = await axios.get(url);
+        // const {title,image,createdAt,views,_id} = res.data.data;
+        setBlogs(res.data.data)
+       console.log(res.data)
+      } catch (error){
+          setUser({user_name:"",email:"",profile_picture:"",_id:"",blogs:[],bio:''});
+          setUserFound(false);
+      }
+    }
     useEffect(() => {
         fetchUser();
-
+        fetchBlogs();
     }, [])
     useEffect(()=>{
       if( loggedInUser && user && loggedInUser?._id===user?._id) setOwnAcc(true);
@@ -75,10 +90,19 @@ const Profile = () => {
           </div>
           
           </div> }
-          <h1>Your Posts</h1>
-          {/* {user?.blogs?.map((e:any,i:number)=>{ return (
-            <BlogCard key={i} title={e.title} image={e.image} content={e.content} createdAt={e.createdAt} likes={e.likes} />
-          )})} */}
+          <h1 className='text-2xl text-center p-2 py-5 font-medium'> {ownAcc?"Your Posts": user?.user_name+"'s Posts"}</h1>
+          <div className='container mx-auto'>
+            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
+
+          {
+            blogs && 
+            blogs.map((e:Blog,i)=>(
+              <BlogCard key={i} title={e.title} views={e.views} image={e.image} blogId={e._id} likes={0} category={e.category} createdAt={e.createdAt}  />
+            ))
+           
+          }
+          </div>
+          </div>
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import {useRef,useState} from 'react'
+import {useRef,useState,useEffect} from 'react'
 //@ts-ignore
 import {blogSchema} from '../utils/validationSchema.js'
 import {Formik,Form,Field} from 'formik'
@@ -15,6 +15,7 @@ import { useAppSelector } from '../app/hooks.ts'
 import { useNavigate } from 'react-router'
 
 import blogCategories from '../utils/data.ts'
+import { useParams } from 'react-router-dom'
 
 type initialValuesType ={
     title:string
@@ -25,23 +26,53 @@ type initialValuesType ={
     tagsInput:string,
     category:string
 }
-const UpdateBlog = () => {
-    const token = useAppSelector((state)=>{return state.auth.token});
-    const [imageUrl, setImageUrl] = useState<string>("https://tinyurl.com/2b8um47r");
-    const [image, setImage] = useState<File|null>(null);
-    const initialValues : initialValuesType = {
-        title:"",
-        content:"",
-        imageUrl:"",
-        tags:[],
-        tagsInput:"",
-        imageFile:null,
-        category:"all"
-    }
-    const imageInputRef= useRef<HTMLInputElement>(null);
-    
-    const navigate = useNavigate();
 
+const UpdateBlog = () => {
+
+  const {blogId} = useParams();
+  const token = useAppSelector((state)=>{return state.auth.token});
+  
+  const [imageUrl, setImageUrl] = useState<string>("");
+  const [image, setImage] = useState<File|null>(null);
+  const [title,setTitle] = useState<string>("");
+  const [content,setContent] = useState<string>("");
+  const [category,setCategory] = useState<string>("");
+  const [tags,setTags] = useState<string[]>([]);
+  
+  const imageInputRef= useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+  const fetchBlog = async()=>{
+    try {
+      const url =  serverUrl+"/api/blog/"+blogId; 
+      const response = await axios.get(url);
+      if(response.status===200)
+      {
+          const {title,content,image,tags,category} = response.data.data;
+          setTitle(title);
+          setContent(content);
+          setImageUrl(image);
+          setTags(tags);
+          setCategory(category);
+      }
+    } catch (error:any) {
+      alert(error.response.data.data);
+      console.error('Error submitting the blog:', error);
+    }
+  }
+  useEffect(() => {
+      fetchBlog()
+    
+  }, [])
+  const initialValues : initialValuesType = {
+    title,
+    content,
+    imageUrl,
+    tags,
+    tagsInput:"",
+    category,
+    imageFile:null,
+  }
+ 
     const handleImageChange = (e:any)=>{
         e.preventDefault();
         setImage(e.target.files[0]);
@@ -49,7 +80,6 @@ const UpdateBlog = () => {
     }
   
     const handleSubmit = async (values:any) => {
-      
       let downloadURL:string = ""
       if (image) {
         const imageRef = ref(storage, `blogs/${Date.now()}`);
@@ -62,8 +92,9 @@ const UpdateBlog = () => {
         }
       }
       else{
-        downloadURL="https://media.sproutsocial.com/uploads/2017/02/10x-featured-social-media-image-size.png"
+        downloadURL= imageUrl
       }
+
       const { title, content, tags,category } = values;
       const headers = {
         'Content-Type': 'application/json',
@@ -72,13 +103,12 @@ const UpdateBlog = () => {
       
   
       const postData = {title,content,tags,image: downloadURL,category};
-  console.log(category)
       try {
-        const url =  serverUrl+"/api/blog/post"; 
-        const response = await axios.post(url,postData,{ headers });
+        const url =  serverUrl+"/api/blog/update/"+blogId; 
+        const response = await axios.put(url,postData,{ headers });
         if(response.status===200)
         {
-          alert("Blog added");
+          alert("Blog Updated");
           console.log(response.data)
           // navigate("/");
         }
@@ -90,11 +120,13 @@ const UpdateBlog = () => {
   
   return (
     <div className="overflow-x-visible">
-        <h1 className='text-3xl px-4 py-6 font-bold'> Add Blog </h1>
-        
-              <div className={` mx-3 rounded-md h-44 bg-cover  shadow-lg bg-center flex items-end justify-center`}
-                    style={{backgroundImage:`url(${imageUrl})`}}
-                >
+        <h1 className='text-3xl px-4 py-6 font-bold'> 
+          Update Blog 
+        </h1>
+        <div 
+          className={` mx-3 rounded-md h-44 bg-cover  shadow-lg bg-center flex items-end justify-center`}
+          style={{backgroundImage:`url(${imageUrl})`}}
+        >
 
         { imageUrl==="https://tinyurl.com/2b8um47r" ?  <button
                     className='flex  items-center bg-slate-100 p-1 rounded-md'
@@ -110,6 +142,7 @@ const UpdateBlog = () => {
                 </div>
         <Formik 
             initialValues={initialValues}
+            enableReinitialize={true}
             onSubmit= {handleSubmit}
             validationSchema={blogSchema}
         >
@@ -117,13 +150,13 @@ const UpdateBlog = () => {
             <Form className='px-2 h-auto'>
                 <div className="input flex flex-col items-start my-3">
                   <label className='text-md' htmlFor="title">Title</label>
-                  <Field className=' rounded-md focus:outline-none py-1 outline-none text-2xl w-full' type="text" name="title" placeholder="Enter Title"/>
+                  <Field value={values.title} className=' rounded-md focus:outline-none py-1 outline-none text-2xl w-full' type="text" name="title" placeholder="Enter Title"/>
                   {errors.title && <small className=' text-red-700 rounded-md'>{errors.title}</small>}
                 </div>
 
                 <div className="input flex flex-col items-start my-3 ">
-                  {/* <label htmlFor="title">Content</label> */}
-                  <Field className='rounded-md py-1  focus:outline-none' as="textarea" cols={40} rows={10} name="content" placeholder="Enter Content"/>
+                  <Field className='rounded-md py-1 w-full h-auto  focus:outline-none' as="textarea" cols={40} rows={7} name="content" placeholder="Enter Content"/>
+                  <span className='text-sm' style={values.content.length>360?{color:"red"}:{color:"green"}}> { values.content.length } / 360 </span>
                   {errors.content && <small className=' text-red-700  rounded-md'>{errors.content}</small>}
                 </div>
 
@@ -133,7 +166,6 @@ const UpdateBlog = () => {
               <Field
                 as="select"
                 name="category"
-                
                 className="border border-gray-300 w-full rounded-md p-1"
               >
                 {blogCategories.map((e:string,i:number)=>{
@@ -204,8 +236,8 @@ const UpdateBlog = () => {
             name="image" 
             className='hidden'
           />
-            <button type="submit" className='w-full bg-black text-white py-2 border-none my-2 flex items-center justify-center ' > Publish </button>
-            <button onClick={()=>{navigate("/")}} className='w-full bg-slate-100 py-2 my-2'>Cancel</button>
+            <button type="submit" className='w-full bg-black text-white py-2 border-none my-2 flex items-center justify-center ' > Update </button>
+            <button onClick={()=>{navigate("/blog/"+blogId)}} className='w-full bg-slate-100 py-2 my-2'>Cancel</button>
             </Form>
         ) }
         </Formik>

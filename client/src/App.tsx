@@ -9,10 +9,12 @@ import UpdateProfile from './pages/UpdateProfile.js'
 import AddBlog from './pages/AddBlog.js'
 import AllBlogs from './pages/AllBlogs.js'
 import SingleBlog from './pages/SingleBlog.js'
+import UpdateBlog from './pages/UpdateBlog.js'
+import Layout from './pages/Layout.js'
 const App = () => {
     const user =  useAppSelector((state)=>{ return state.auth.user })
     const router = createBrowserRouter(createRoutesFromElements(
-        <Route path='/'>
+        <Route path='/' element={<Layout/>}>
             <Route path='' element={<Home/>}/>
              <Route path='signin' element={!user?<SignIn/>:<Navigate to="/"/>}/>
             <Route path='signup' element={<SignUp/>}/>
@@ -22,6 +24,7 @@ const App = () => {
             <Route path='blog/addblog' element={<AddBlog/>} />
             <Route path='blog/explore' element={<AllBlogs/>} />
             <Route path='blog/:blogId' element={<SingleBlog/>} />
+            <Route path='blog/update/:blogId' element={<UpdateBlog/>} />
 
         </Route>
       ))  

@@ -9,8 +9,8 @@ import { useAppSelector } from '../app/hooks';
 import {GrLinkPrevious} from 'react-icons/gr'
 import {FcLike} from 'react-icons/fc'
 import {AiOutlineHeart} from 'react-icons/ai'
-import {BiSolidCommentDetail} from 'react-icons/bi'
-import CommentBox from '../components/CommentBox';
+
+import DotMenu from '../components/DotMenu';
 
 // import {FaShare} from 'react-icons/fa'
 const SingleBlog = () =>
@@ -161,37 +161,84 @@ const SingleBlog = () =>
             console.log(error.response.data);
         }
     }
+    const deleteBlog = async()=>{
+        setShowModal(false);
+        try {
+           
+            const url = `${serverUrl}/api/blog/${blogId}` 
+            const headers={"Authorization":token,"Content-Type":"application/json"}
+            const response = await axios.delete(url,{headers})
+            if(response.status===200)
+            {
+                alert("Deleted");
+                console.log(response.data)
+            }
+        } catch (error:any) {
+            console.log(error.response.data);
+        }
+    }
     //Load the Comments 
     // useEffect(() => {
      
     // }, [showModal])
     
   return (
-    <div className='mx-4 flex flex-col space-y-3' >
-
-       
-        <button onClick={()=>{navigate("/blog/explore")}} className='border-slate-500 border-b-3 flex items-center' > <GrLinkPrevious/> back</button>
-        <div>
-            <small> <span className='shadow-md rounded-full font-semibold'>{blog?.category.toUpperCase()}</span></small>
-            {blog && <small className='mx-2'>{format(blog.createdAt)}</small>}
+    <>
+       {showModal && (
+    <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm">
+      <div className="modal flex flex-col items-center justify-center rounded-xl h-[200px] w-72 bg-slate-100 shadow-xl z-10">
+        <h1 className="text-2xl mb-4 text-center">Are you sure you want to delete this?</h1>
+        <div className="flex space-x-2">
+          <button  className="px-3 py-1 bg-red-600 text-white rounded-md" onClick={deleteBlog}>
+            Yes
+          </button>
+          <button className="px-3 py-1 bg-slate-600 text-white rounded-md" onClick={() => setShowModal(false)}>
+            Cancel
+          </button>
         </div>
-        <h1 className='text-4xl font-bold'>{blog?.title}</h1>
+      </div>
+    </div>
+  )}
+        
+        <div className='mx-4 flex flex-col space-y-3 lg:mx-52'>
+        <button
+            onClick={()=>{navigate("/blog/explore")}} 
+            className='border-slate-500 border-b-3 flex items-center underline'> 
+            <GrLinkPrevious/> Back
+        </button>
+        
+        <div className='flex justify-between '>
+            <div className='left'>
+                <small>
+                    <span 
+                        className='shadow-md p-1  rounded-full font-semibold'
+                        >
+                        {blog?.category.toUpperCase()}
+                    </span>
+                </small>
+                {blog && <small className='mx-2 lg:text-md '>{format(blog.createdAt)}</small>}
+            </div>
+            {
+                <DotMenu ownBlog={logginedUser?._id === blog?.author } setShowModal ={setShowModal} blogId = {String(blogId)}/>
+            }
+        </div>
+        <h1 className='text-4xl font-bold lg:text-5xl'>{blog?.title}</h1>
         <Link to={`/user/${blog?.author}`} > 
             <div className='container flex items-center space-x-1'> 
                 <div className="left">
-                    { profile_picture &&   <img src={profile_picture} className='h-10 w-10 object-cover rounded-full ' alt="profile" />}
+                    { profile_picture && <img src={profile_picture} className='h-10 w-10 object-cover rounded-full' alt="profile" />}
                 </div>
                 <div className="right">
-                    <small className="font-semibold">{user_name}</small>
+                    <span className="font-semibold">{user_name}</span>
                 </div>
             </div>
         </Link>
 
         <div className='bg-slate-100'>
 
-        <img src={blog?.image} className='rounded-lg h-52 w-full object-contain' alt="Blog Image" />
+        <img src={blog?.image} className='rounded-lg h-52 w-full object-contain lg:h-72' alt="Blog Image" />
         </div>
-        <small> <span className='flex items-center text-slate-800 font-semibold'>{blog?.views} Views </span> </small>
+        <small> <span className='flex items-center text-slate-800 font-semibold lg:text-lg'>{blog?.views} Views </span> </small>
         <div className="buttons flex space-x-2 items-center"> 
             { 
                 !liked?  
@@ -204,12 +251,11 @@ const SingleBlog = () =>
                     <FcLike  size={20}/>&nbsp;{blog?.likes}Likes
                 </button> 
             }    
-            <button className='flex'>
-                <BiSolidCommentDetail fill="" size={20}/> &nbsp; {blog?.likes} Comments </button>
+           
 
         </div>
         <div className='w-full '>
-            <p className='text-sm  lg:text-md whitespace-pre-line overflow-scroll'>{blog?.content}</p>
+            <p className='text-sm  lg:text-lg text-ellipsis overflow-hidden ... whitespace-pre-line '>{blog?.content}</p>
         </div>
 
         <h1 className='text-2xl font-bold text-blue-950'>Comments</h1>
@@ -230,7 +276,7 @@ const SingleBlog = () =>
 
             <div className="displayComments w-full mx-1 ">
                 {comments?.map((e,i)=>(
-                   <div className="text-black p-4 flex max-w-lg">
+                   <div key={i} className="text-black p-4 flex max-w-lg">
                      <img className="rounded-full h-8 w-8 mr-2 mt-1 " src={e.profile_picture}/>
                      <div className='min-h-[fit-content]'>
                        <div className="bg-gray-100 rounded-lg max-w-lg px-4 pt-2 pb-2.5">
@@ -246,6 +292,7 @@ const SingleBlog = () =>
                 ))}
             </div>
     </div>
+    </>
   )
 }
 
