@@ -7,6 +7,8 @@ import axios from 'axios';
 
 import {BsPencilFill, BsHeart} from 'react-icons/bs'
 import BlogCard from '../components/BlogCard';
+import { MdEmail } from 'react-icons/md';
+import ProfileLoader from './Loaders/ProfileLoader';
 type User = 
 {
   user_name:string
@@ -73,23 +75,29 @@ const Profile = () => {
     
   return (
     <div>
+    
+        <ProfileLoader/>
         {!userFound && <h1>User not Found :| </h1>  }
-        { !user  && <h1>Loading....</h1> }
-        { user && <div className='flex items-center justify-center bg-slate-100 py-4'>
-          <div className='w-[40%]'>
-         { user.profile_picture && <img src={String(user.profile_picture)}  alt="" className='rounded-full h-32 w-32'/> }
-          </div>
-          <div className='w-[60%]'>
+        
+        { user && <div className='flex flex-col items-center justify-center bg-slate-50 py-4 lg:mx-32'>
+          <div className='w-full flex justify-between items-start px-4 '  >
+         { user.profile_picture && <img src={String(user.profile_picture)}  alt="" className='rounded-md my-4 h-32 w-32 shadow-xl lg:h-48 lg:w-48 '/> }
 
-          <h1 className='text-2xl'>{user.user_name}</h1>
-          <h4 className='text-sm'> {user.email}</h4>
-          <p>{user.bio}</p>
-          {ownAcc ? <div className='flex space-x-2'><button className='btn-primary1' onClick={handleEditClick}>Edit &nbsp;<BsPencilFill/> </button> <button className='btn-primary1'>View Fav &nbsp; <BsHeart/> </button> </div>: <></>}
+          {ownAcc ? <button className='bg-black text-white py-1 px-4 flex items-center' onClick={handleEditClick}>Edit Profile&nbsp;<BsPencilFill/> </button> : <></>}
+          </div>
+
+          <div className='w-full px-4'>
+          
+          <h1 className='text-4xl my-1'>{user.user_name}</h1>
+          <h4 className='text-sm flex items-cente my-1'>  {user.email}</h4>
+          <p className='text-sm text-slate-600 text-left my-1'> <h1 className='text-lg text-black'>About</h1> {user.bio}</p>
 
 
           </div>
           
           </div> }
+
+
           <h1 className='text-2xl text-center p-2 py-5 font-medium'> {ownAcc?"Your Posts": user?.user_name+"'s Posts"}</h1>
           <div className='container mx-auto'>
             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>

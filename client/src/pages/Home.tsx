@@ -2,11 +2,15 @@ import {useEffect, useState} from 'react'
 import { useAppSelector } from '../app/hooks';
 import { serverUrl } from '../conf/conf';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import {  BiRightArrowAlt } from 'react-icons/bi';
+import { catImages } from '../utils/data.ts';
 const Home = () => {
     const user = useAppSelector((state:any)=>{ return state.auth.user });
     const [title,setTitle] = useState<string>();
     const [content,setContent] = useState<string>();
     const [image,setImage] = useState<string>();
+    const navigate = useNavigate();
     const fetchMostLikedBlog = async()=>{
         try {
           const url = serverUrl+"/api/blog/get/mostLiked"
@@ -47,28 +51,52 @@ const Home = () => {
         </div>
       </section>
 
-      <section className="bg-gray-950 py-4 text-white">
+      <section className="bg-gray-950 py-10 lg:py-32  text-white">
         <h1 className='text-3xl font-bold mx-3.5 my-4'>Explore by Categories</h1>
-        <div className='grid grid-cols-1 lg:grid-cols-3 mx-3.5 gap-5'>
-          <button className='py-7 text-2xl font-semibold object-cover rounded-md' style={{backgroundImage:"url(https://wallpaperaccess.com/full/266471.jpg)"}}> 
+        <div className='grid grid-cols-1 lg:grid-cols-3 mx-3.5 gap-5 cat-btns'>
+          <button 
+            onClick={()=>{navigate("/blog/category/technology")}} 
+            className='py-7 text-2xl font-semibold object-cover rounded-md' 
+            style={{backgroundImage:`url(${catImages.technology})`}}> 
             Technology
           </button>
-          <button className='py-7 text-2xl font-semibold object-center rounded-md' style={{backgroundImage:"url(https://www.hdwallpapers.in/download/green_leaves_in_blur_green_background_hd_nature-1366x768.jpg)"}}> 
+
+          <button 
+            onClick={()=>{navigate("/blog/category/nature")}} 
+            className='py-7 text-2xl font-semibold object-center rounded-md' 
+            style={{backgroundImage:`url(${catImages.nature})`}}> 
             Nature
           </button>
-          <button className='py-7 text-2xl text-white font-semibold object-center rounded-md' style={{backgroundImage:"linear-gradient(0deg,#0009,#0009), url(https://e0.pxfuel.com/wallpapers/319/181/desktop-wallpaper-health-care-medical-care.jpg)",objectFit:"contain"}}> 
+
+          <button 
+            onClick={()=>{navigate("/blog/category/health")}} 
+            className='py-7 text-2xl text-white font-semibold object-center rounded-md' 
+            style={{backgroundImage:`linear-gradient(0deg,#0009,#0009), url(${catImages.health})`,objectFit:"contain"}}> 
             Health
           </button>
-          <button className='py-7 text-2xl text-white font-semibold object-center rounded-md' style={{backgroundImage:"linear-gradient(0deg,#0009,#0009), url(https://thumbs.dreamstime.com/b/balanced-diet-food-background-balanced-diet-food-background-organic-food-healthy-nutrition-superfoods-meat-fish-legumes-nuts-121936796.jpg)",objectFit:"none"}}> 
+
+          <button 
+          onClick={()=>{navigate("/blog/category/food")}} 
+          className='py-7 text-2xl text-white font-semibold object-center rounded-md' 
+          style={{backgroundImage:`linear-gradient(0deg,#0009,#0009), url(${catImages.food})`,objectFit:"none"}}> 
             Food
           </button>
-          <button className='py-7 text-2xl text-white font-semibold object-center rounded-md' style={{backgroundImage:"linear-gradient(0deg,#0009,#0009), url(https://png.pngtree.com/background/20230401/original/pngtree-travel-around-the-world-background-picture-image_2253108.jpg)",objectFit:"none"}}> 
+
+          <button 
+            onClick={()=>{navigate("/blog/category/travel")}} 
+            className='py-7 text-2xl text-white font-semibold object-center rounded-md' 
+            style={{backgroundImage:`linear-gradient(0deg,#0009,#0009), url(${catImages.travel})`,objectFit:"none"}}> 
             Travel
           </button>
-          <button className='py-7 text-2xl text-white font-semibold object-center rounded-md' style={{backgroundImage:"linear-gradient(0deg,#0009,#0009), url(https://png.pngtree.com/background/20230401/original/pngtree-travel-around-the-world-background-picture-image_2253108.jpg)",objectFit:"none"}}> 
-            Travel
+
+          <button 
+            onClick={()=>{navigate("/blog/category/fitness")}} 
+            className='py-7 text-2xl text-white font-semibold object-center rounded-md'
+            style={{backgroundImage:`linear-gradient(0deg,#0009,#0009), url(${catImages.fitness})`,objectFit:"none"}}> 
+            Fitness
           </button>
         </div>
+        <Link to="/blog/explore" className='flex cursor-pointer explore-more-btn text-2xl my-10 text-center mx-auto  items-center justify-center underline font-semibold mb-3'>Explore All <BiRightArrowAlt size={30}/> </Link>
       </section>
     </div>
   )

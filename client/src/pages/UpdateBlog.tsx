@@ -14,7 +14,7 @@ import { useAppSelector } from '../app/hooks.ts'
 
 import { useNavigate } from 'react-router'
 
-import blogCategories from '../utils/data.ts'
+import {blogCategories} from '../utils/data.ts'
 import { useParams } from 'react-router-dom'
 
 type initialValuesType ={

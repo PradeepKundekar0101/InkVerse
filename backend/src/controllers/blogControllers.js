@@ -15,11 +15,32 @@ export const addBlog =async (req,res)=>{
 }
 export const getAllBlogs=async (req,res)=>{
         try {
-            const page = req.query.page;
+            let queryObject ={};
+            const {category,sort,page} = req.query;
+            if(category)  queryObject.category  = {$regex:category,$options:"i"}
             const limit = 10;
             const skip = (page-1) * 10;
-            const blogs = await Blog.find().skip(skip).limit(limit);
-            res.status(200).json({data:blogs});
+            
+            let blogs = Blog.find(queryObject);
+            let total = await  Blog.countDocuments(queryObject);
+         
+            if(sort)
+            {
+                if(sort==='a-z')
+                    blogs.sort({"title":"asc"}).skip(skip).limit(limit);
+                else if(sort=="z-a")
+                   blogs.sort({"title":"desc"}).skip(skip).limit(limit);
+                else if(sort=="views")
+                    blogs.sort({"views":"desc"}).skip(skip).limit(limit);
+                else if(sort==="likes")
+                    blogs.find().sort({"likes":"desc"}).skip(skip).limit(limit);
+                else if(sort==="new")
+                    blogs.find().sort({"createdAt":"desc"}).skip(skip).limit(limit);
+                else if(sort==="old")
+                    blogs.sort({"createdAt":"asc"}).skip(skip).limit(limit);
+            } 
+            const finalData = await blogs;
+            res.status(200).json({data:finalData,totalDocs:total});
            
         } catch (error) {
             console.log(error)
@@ -140,7 +161,7 @@ export const postComment = async(req,res)=>{
         blog.comments.push(saved._id);
         
         await blog.save();
-        res.status(200).json({data:blog});
+        res.status(200).json({data:saved});
        
     } catch (error) {
         res.status(500).json({data:error.message});
@@ -201,3 +222,27 @@ export const getMostLiked = async(req,res)=>{
         res.status(500).json({ error: 'Internal Server Error' });
       }
 }
+
+export const getTotalNoOfCategoryBlogs =async (req,res)=>{
+    try {
+        const totalCount =  await Blog.countDocuments({category:req.params.category});
+        res.status(200).json({data:totalCount});
+    } catch (error) {
+        res.status(500).json({data:error.message});
+    }
+}
+export const getSearchedBlogs = async (req, res) => {
+    try {
+        const search = req.params.search;
+        const blogs = await Blog.find({
+            $or: [
+                { title: { $regex: search, $options: 'i' } }, // Search by title using case-insensitive regex
+                { tags: { $in: [search] } },// Search by tags using $in operator
+                { category : {$regex : search, $options:"i"} }
+            ]
+        });
+        res.status(200).json({ data: blogs });
+    } catch (error) {
+        res.status(500).json({ data: error.message });
+    }
+};

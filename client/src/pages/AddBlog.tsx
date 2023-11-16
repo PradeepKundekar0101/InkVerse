@@ -14,7 +14,7 @@ import { useAppSelector } from '../app/hooks.ts'
 
 import { useNavigate } from 'react-router'
 
-import blogCategories from '../utils/data.ts'
+import {blogCategories} from '../utils/data.ts'
 
 type initialValuesType ={
     title:string
@@ -89,15 +89,18 @@ const AddBlog = () => {
     };
   
   return (
-    <div className="overflow-x-visible">
-        <h1 className='text-3xl px-4 py-6 font-bold'> Add Blog </h1>
+    <div className='dark:bg-gray-950'>
+
+    
+    <div className="overflow-x-visible py-10 lg:mx-72 mx-5 dark:bg-gray-950 dark:text-white">
+        <h1 className='text-3xl px-4 py-6 font-bold '> Add Blog </h1>
         
               <div className={` mx-3 rounded-md h-44 bg-cover  shadow-lg bg-center flex items-end justify-center`}
                     style={{backgroundImage:`url(${imageUrl})`}}
                 >
 
         { imageUrl==="https://tinyurl.com/2b8um47r" ?  <button
-                    className='flex  items-center bg-slate-100 p-1 rounded-md'
+                    className='flex  items-center bg-slate-100 p-1 dark:text-black rounded-md'
                     onClick={()=>{imageInputRef && imageInputRef.current && imageInputRef.current.click()}}>
                         Upload Image&nbsp;<AiOutlineCloudUpload size={20}/> 
                 </button> :
@@ -117,14 +120,14 @@ const AddBlog = () => {
             <Form className='px-2 h-auto'>
                 <div className="input flex flex-col items-start my-3">
                   <label className='text-md' htmlFor="title">Title</label>
-                  <Field className=' rounded-md focus:outline-none py-1 outline-none text-2xl w-full' type="text" name="title" placeholder="Enter Title"/>
-                  {errors.title && <small className=' text-red-700 rounded-md'>{errors.title}</small>}
+                  <Field className=' rounded-md focus:outline-none py-1 outline-none text-2xl w-full dark:bg-gray-950' type="text" name="title" placeholder="Enter Title"/>
+                  {errors.title && <small className=' text-red-700 dark:text-red-500'>{errors.title}</small>}
                 </div>
 
                 <div className="input flex flex-col items-start my-3 ">
                   {/* <label htmlFor="title">Content</label> */}
-                  <Field className='rounded-md py-1  focus:outline-none' as="textarea" cols={40} rows={10} name="content" placeholder="Enter Content"/>
-                  {errors.content && <small className=' text-red-700  rounded-md'>{errors.content}</small>}
+                  <Field className='rounded-md py-1  w-full  focus:outline-none dark:bg-gray-950' as="textarea" rows={10} name="content" placeholder="Enter Content"/>
+                  {errors.content && <small className=' text-red-700 dark:text-red-500'>{errors.content}</small>}
                 </div>
 
 
@@ -133,8 +136,7 @@ const AddBlog = () => {
               <Field
                 as="select"
                 name="category"
-                
-                className="border border-gray-300 w-full rounded-md p-1"
+                className="border border-gray-300 w-full rounded-md py-2 px-1 my-3 dark:bg-slate-800 dark:border-none outline-none"
               >
                 {blogCategories.map((e:string,i:number)=>{
                   return <option key={i} value={e.toLowerCase()}>{e}</option>
@@ -145,10 +147,10 @@ const AddBlog = () => {
 
               <div className="input flex flex-col items-start w-full my-2  h-auto">
 
-              <label htmlFor="tags">Tags</label>
+              <label htmlFor="tags my-3">Tags</label>
               <div className="flex items-center space-x-2">
                 <Field
-                  className="border border-slate-300 rounded-md py-1 px-2 outline-black"
+                  className="border border-slate-300 rounded-md py-1 px-2 outline-black dark:bg-slate-800 my-3"
                   type="text"
                   name="tagsInput"
                   placeholder="Add Tags"
@@ -175,9 +177,9 @@ const AddBlog = () => {
                 </button> 
 
                 </div>
-                <div className=' flex flex-wrap '>
+                <div className=' flex flex-wrap py-3 '>
                     {values.tags.map((tag,i) => (
-                    <div className='flex items-center m-1 rounded-full justify-center tagbox bg-slate-100 px-2 py-1' key={i}>
+                    <div className='flex items-center m-1 rounded-full justify-center tagbox bg-slate-100 px-2 py-1 dark:bg-slate-700' key={i}>
                     {tag}
                      <button  
                         className='mx-1' 
@@ -204,11 +206,15 @@ const AddBlog = () => {
             name="image" 
             className='hidden'
           />
-            <button type="submit" className='w-full bg-black text-white py-2 border-none my-2 flex items-center justify-center ' > Publish </button>
-            <button onClick={()=>{navigate("/")}} className='w-full bg-slate-100 py-2 my-2'>Cancel</button>
+          <div className='lg:flex items-center justify-start'>
+
+            <button type="submit" className='w-full lg:w-auto lg:px-10 mr-5 bg-black text-white py-2 border-none my-2 flex items-center justify-center dark:bg-blue-600 ' > Publish </button>
+            <button onClick={()=>{navigate("/")}} className='w-full text-black lg:w-auto lg:px-10 bg-slate-100 py-2 my-2'>Cancel</button>
+          </div>
             </Form>
         ) }
         </Formik>
+    </div>
     </div>
   )
 }

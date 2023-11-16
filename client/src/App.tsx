@@ -1,4 +1,5 @@
 import './index.css'
+import { useEffect } from 'react'
 import SignUp from './pages/SignUp'
 import {RouterProvider,createBrowserRouter,createRoutesFromElements,Route,Navigate} from 'react-router-dom'
 import SignIn from './pages/SignIn.js'
@@ -11,7 +12,21 @@ import AllBlogs from './pages/AllBlogs.js'
 import SingleBlog from './pages/SingleBlog.js'
 import UpdateBlog from './pages/UpdateBlog.js'
 import Layout from './pages/Layout.js'
+import CategoryBlog from './pages/CategoryBlog.js'
+import SearchBlog from './pages/Search.js'
+
 const App = () => {
+  const mode = useAppSelector ((state)=>{return state.mode.mode});
+  useEffect(() => {
+      if(mode==="dark")
+      {
+          document.documentElement.classList.add("dark");
+      }
+      else{
+        document.documentElement.classList.remove("dark");
+      }
+  }, [mode])
+  
     const user =  useAppSelector((state)=>{ return state.auth.user })
     const router = createBrowserRouter(createRoutesFromElements(
         <Route path='/' element={<Layout/>}>
@@ -25,6 +40,8 @@ const App = () => {
             <Route path='blog/explore' element={<AllBlogs/>} />
             <Route path='blog/:blogId' element={<SingleBlog/>} />
             <Route path='blog/update/:blogId' element={<UpdateBlog/>} />
+            <Route path='blog/category/:blogCat' element={<CategoryBlog/>} />
+            <Route path='blog/search/:search' element={<SearchBlog/>} />
 
         </Route>
       ))  

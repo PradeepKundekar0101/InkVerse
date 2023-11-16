@@ -21,3 +21,19 @@
 .btn-primary1{
     @apply rounded-md capitalize bg-blue-600 text-white flex items-center justify-center w-36 py-1
 }
+.explore-more-btn{
+    cursor: pointer;
+    transition: 0.2s;
+}
+.explore-more-btn:hover
+{
+    transform: scale(1.1);
+}
+.cat-btns button{
+    transition: 0.3s all;
+     cursor: pointer;
+}
+.cat-btns button:hover{
+    transform: scale(1.05);
+    box-shadow: 0px 0px 10px 1px #4c4c4c;
+}

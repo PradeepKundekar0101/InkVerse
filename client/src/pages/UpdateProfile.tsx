@@ -136,19 +136,19 @@ const UpdateProfile = () => {
       }
 
   return (
-    <div>
-        <h1 className='text-3xl px-4 py-4'>Update Profile</h1>
-        <form onSubmit={handleSubmit} className='flex shadow-lg p-5 mx-4 flex-col items-start justify-start space-y-2 mx-2'>
-          <div className='block mx-auto'>
+    <div className='py-10'>
+        <h1 className='text-3xl  lg:mx-72 py-10 lg:text-4xl mx-4'>Update Profile</h1>
+        <form onSubmit={handleSubmit} className='flex lg:mx-72 flex-col items-start justify-start space-y-2 mx-4'>
+          <div className='flex items-center flex-col mx-auto'>
             <img 
               src={profile_picture_url} 
-              className='h-32 w-32 rounded-full border-blue-100 border-4 my-2 shadow-lg' alt="profile" />
-            <button onClick={handleChangeProfile} className='border-slate-200 bg-slate-200 px-2 py-1 rounded-md'>Change Profile</button>
+              className='h-32 w-32 rounded-full border-blue-100 border-4 my-2 shadow-lg lg:h-52 lg:w-52' alt="profile" />
+            <button onClick={handleChangeProfile} className='border-slate-200 mx-auto bg-slate-200 px-2 py-1 rounded-md '>Change Profile</button>
           </div>
             <input 
               type="text" 
               value={user_name}  
-              className='border border-slate-300 py-1 rounded-md px-1 w-full' 
+              className='border border-slate-300 py-1 outline-none focus:ouline-none rounded-md px-1 w-full' 
               onChange={handleUserNameChange}  
             />
             {error && <small className='text-red-500'>{error}</small>}

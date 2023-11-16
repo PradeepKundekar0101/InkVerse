@@ -37,14 +37,14 @@ const DotMenu: React.FC<MenuProps>= ({ownBlog,blogId,setShowModal}) => {
   }, []);
 
   return (
-    <div className="place-items-center relative">
+    <div className="place-items-center dark:text-white relative">
       <button onClick={isFrameVisible ? hideFrame : showFrame}>
         <BsThreeDotsVertical size={30} />
       </button>
       <div
         ref={frameRef}
         style={{ visibility: isFrameVisible ? 'visible' : 'hidden' }}
-        className="absolute flex flex-col mt-2 ml-[-100px] border-10 p-2 px-4 rounded-lg border-black bg-slate-100"
+        className="absolute flex flex-col mt-2 ml-[-100px] border-10 p-2 px-4 rounded-lg border-black bg-slate-100 dark:bg-slate-700 dark:text-white"
         id="frame1"
       >
         {
@@ -54,7 +54,7 @@ const DotMenu: React.FC<MenuProps>= ({ownBlog,blogId,setShowModal}) => {
             <button className='flex items-center' onClick={()=>{ navigate("/blog/update/"+blogId) }}>  <AiFillEdit/>&nbsp; Edit   </button>
         </div>
         <div className="info my-1">
-            <button className='flex items-center' onClick={()=>{setShowModal(true)}}><AiFillDelete/> &nbsp; Delete</button>
+            <button className='flex items-center' onClick={()=>{setFrameVisible(false);setShowModal(true);}}><AiFillDelete/> &nbsp; Delete</button>
         </div>
             </>:<></>
         }
