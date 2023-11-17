@@ -3,6 +3,8 @@ import { useEffect } from "react"
 // import { serverUrl } from "../conf/conf"
 import {format} from 'timeago.js'
 import {useNavigate} from 'react-router-dom'
+import { BiHeart } from "react-icons/bi"
+import { BsEye, BsEyeFill, BsFillHeartFill } from "react-icons/bs"
 type BlogCardProps = {
     title:string,
     image:string,
@@ -26,8 +28,9 @@ const BlogCard:React.FC<BlogCardProps> = ({blogId,title,image,views,createdAt,ca
         <img src={image}  alt="Blog Image" className="h-32 w-full object-cover rounded-tl-lg rounded-tr-lg "  />
         <span className=" uppercase text-sm px-2 rounded-full shadow-md my-3 dark:text-white dark:shadow-sm dark:shadow-gray-600 "><small>{category}</small></span>
 
-        {views===1 ? <span  className="dark:text-white"> <small> {views} view </small></span>:<span className="dark:text-white">
-        <small> {views} views</small> <small>{likes} likes</small>  </span> }
+    <div className="flex items-center space-x-2">
+        <small className="flex items-center"> <BsEyeFill/> &nbsp; {views} </small> <small className="flex items-center"><BsFillHeartFill/> &nbsp;{likes} </small>  
+    </div>
 
         <h1 className="text-2xl font-semibold dark:text-white"> {title.length<20 ? title : title.slice(0,20)+"..." } </h1>
         <button

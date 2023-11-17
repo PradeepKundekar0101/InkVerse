@@ -84,8 +84,10 @@ export const updateUser = async(req,res)=>{
     const tokenUserId = req.user.userId;
     if(paramsUserId === tokenUserId)
     {
-      const updatedUser = await User.findByIdAndUpdate(paramsUserId,req.body)
-      res.status(200).json({ message:"User registered successfully",user:updatedUser});
+    
+      const updatedUser = await User.findByIdAndUpdate(paramsUserId,req.body,{new:true})
+      
+      return res.status(200).json({ message:"User registered successfully",user:updatedUser});
     }
     else{
     

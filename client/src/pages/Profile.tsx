@@ -79,7 +79,7 @@ const Profile = () => {
                 <div className='h-screen flex items-center justify-center dark:bg-gray-950'> <h1 className='text-5xl dark:text-white'>User Not Found</h1> </div>  
                 :
                 <>
-                <div className='flex flex-col items-center justify-center bg-slate-50 py-4 lg:mx-32 dark:bg-slate-800 rounded-md'>
+                <div className='flex flex-col items-center justify-center bg-slate-50 py-4 lg:mx-32 mx-3 dark:bg-slate-800 rounded-md'>
                 <div className='w-full flex justify-between items-start px-4 '>
                 { user.profile_picture && <img src={String(user.profile_picture)} alt="Profile" className='rounded-md my-4 h-32 w-32 shadow-2xl lg:h-48 lg:w-48 '/> }
 

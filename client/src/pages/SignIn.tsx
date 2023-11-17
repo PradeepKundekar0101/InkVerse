@@ -79,6 +79,7 @@ const SignIn = () => {
               setLoading(false);
           }
         } catch (error:any) {
+          toast.dismiss();
           if (error.response)   toast.error(error.response.data.message);
           else  toast.error('An unexpected error occurred. Please try again later.');
           setLoading(false);
@@ -117,7 +118,7 @@ const SignIn = () => {
             {error && <p className="text-red-500">{error}</p>} 
         <p className='text-slate-400 text-sm my-2'> ---- OR ----</p>
         <p>Sign In with</p>
-        <button type='button' className='py-2 flex  px-20 rounded-lg justify-center text-xl lg:w-full lg:mx-4  items-center bg-slate-200 dark:text-white mx-10 text-black my-2 dark:bg-slate-700' onClick={googleAuth}>  <FcGoogle/> &nbsp;  Google </button>
+        <button type='button' className='py-2 flex w-full  px-20 rounded-lg justify-center text-mdlg:w-full lg:mx-4  bg-slate-200 dark:text-white mx-10 text-black my-2 dark:bg-slate-700 items-center' onClick={googleAuth}>  <FcGoogle/> &nbsp; Google </button>
               <Link to="/signup" className="underline"> Create an account  </Link>
         </form>
             </div>

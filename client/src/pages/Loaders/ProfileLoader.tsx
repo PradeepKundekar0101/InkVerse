@@ -2,7 +2,7 @@
 import AllBlogLoader from './AllBlogLoader'
 const ProfileLoader = () => {
   return (
-    <div className='lg:px-36 dark:bg-gray-950 '>
+    <div className='lg:px-36 dark:bg-gray-950 px-3 '>
         <div className='flex justify-between'>
         <div className='rounded-md my-4 h-32 w-32 shadow-xl animate-pulse bg-slate-400 dark:bg-slate-700 lg:h-48 lg:w-48 '>
         </div>

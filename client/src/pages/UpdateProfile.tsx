@@ -27,12 +27,12 @@ const UpdateProfile = () => {
     const [user_name,setUsername] = useState<string>("");
     const [bio,setBio] = useState<string>("");
     const [profile_picture,setProfilePicture] = useState<File | null>();
-    const [profile_picture_url,setProfilePictureUrl] = useState<string>();
+    const [profile_picture_url,setProfilePictureUrl] = useState<string>("");
 
     const [error,setError] = useState<string>();
     const [userNameAvailable,setUserNameAvailable] = useState<boolean>();
     const [loading,setLoading] = useState<boolean>(false);
-    const [updated,setUpdated] = useState<boolean>(false);
+    
 
     const imageBtnRef = useRef<any>(null);
 
@@ -54,9 +54,9 @@ const UpdateProfile = () => {
           setUsername(user_name);
           setBio(bio);
           setProfilePicture(profile_picture);
-          setProfilePictureUrl(String(res.data.user.profile_picture))
+          setProfilePictureUrl(profile_picture);
         } catch (error:any){
-            alert(error.response.data.data)
+            toast.error(error.response.data.data)
         }
       }
       useEffect(() => {
@@ -105,6 +105,7 @@ const UpdateProfile = () => {
       //METHOD 6  
      
       const handleSubmit = async(e:any)=>{
+  
         e.preventDefault()
         setLoading(true);
         toast.loading("Updating profile...");
@@ -115,18 +116,21 @@ const UpdateProfile = () => {
         }
         try {
             const imageRef:StorageReference = ref(storage,`profiles/${Date.now()}`);
-            if(!profile_picture) return 
-            const imageUpload = await uploadBytes(imageRef,profile_picture)
-            let downloadURL:string="";
-            if(imageUpload)
-               downloadURL = await getDownloadURL(ref(storage,imageUpload.metadata.fullPath))
-            else
+            if(!profile_picture ) return 
+            let downloadURL:string = profile_picture_url;
+            if(!(typeof profile_picture==='string'))
             {
-              toast.error("Image Uploading failed");
-              return;
+                const imageUpload = await uploadBytes(imageRef,profile_picture)
+                if(imageUpload)
+                   downloadURL = await getDownloadURL(ref(storage,imageUpload.metadata.fullPath))
+                else
+                {
+                    toast.error("Image Uploading failed");
+                    return;
+                }
             }
-            const url = serverUrl+"/api/user/"+userId 
-            const postData ={
+             const url = serverUrl+"/api/user/"+userId 
+              const postData ={
               user_name,profile_picture: downloadURL, bio
             }
             const headers = {"Content-Type":"application/json","Authorization":token }
@@ -136,10 +140,12 @@ const UpdateProfile = () => {
            {
              toast.success("User Updated");
              setLoading(false);
+             console.log(response.data.user)
              dispatch(login({user:response.data.user,token}));
-             setUpdated(true);
+             
            }
         } catch (error:any) {
+          toast.dismiss();
           setLoading(false);
           toast.error(error.response.data.data)
         }
@@ -182,15 +188,11 @@ const UpdateProfile = () => {
             
             <input type="file" onChange={handleFileChange} className='hidden' ref={imageBtnRef} />
             <div className='flex space-x-1'>
-          {
-            updated? <button type='button' onClick={()=>{
-              navigate("/user/"+userId);
-            }} className='w-full lg:w-auto lg:px-10 mr-5 bg-black text-white py-2 border-none my-2 flex items-center justify-center dark:bg-blue-600 '>Preview Profile</button> :
-            <>
+          
             <input type="submit" disabled={loading} className='btn-primary1' value={loading?"Updating...":"Update"} />
             <button disabled={loading} className='bg-slate-200 px-4 rounded-md dark:text-black' onClick={()=>{navigate("/")}} >Cancel</button>
-            </>
-          }
+            
+          
             </div>
         </form>
     </div>
