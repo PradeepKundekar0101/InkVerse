@@ -12,8 +12,12 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000
 const MONGOURL = process.env.MONGOURL
 const connect = async()=>{
-    await mongoose.connect(MONGOURL)
-    console.log("Connected to DB");
+    try {
+        await mongoose.connect(MONGOURL)
+        console.log("Connected to DB");
+    } catch (error) {
+        console.log(error.message);
+    }
 }
 app.use("/api/user/",userRoute);
 app.use("/api/blog/",blogRoute);

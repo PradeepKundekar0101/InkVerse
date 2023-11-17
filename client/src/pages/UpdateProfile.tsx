@@ -13,6 +13,7 @@ import {AiFillCheckCircle} from 'react-icons/ai'
 import {FcCancel} from 'react-icons/fc'
 
 import {login} from '../app/slices/authSlice.ts'
+import { Toaster,toast } from 'react-hot-toast';
 
 const UpdateProfile = () => {
 
@@ -20,7 +21,7 @@ const UpdateProfile = () => {
     const user = useAppSelector((state)=>{ return state.auth.user});
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
-    console.log(user)
+
 
     const {userId}= useParams<string>();
     const [user_name,setUsername] = useState<string>("");
@@ -30,9 +31,12 @@ const UpdateProfile = () => {
 
     const [error,setError] = useState<string>();
     const [userNameAvailable,setUserNameAvailable] = useState<boolean>();
+    const [loading,setLoading] = useState<boolean>(false);
+    const [updated,setUpdated] = useState<boolean>(false);
 
     const imageBtnRef = useRef<any>(null);
 
+    
 
     //METHOD 1 
     const handleFileChange = (e:any)=>{
@@ -102,9 +106,13 @@ const UpdateProfile = () => {
      
       const handleSubmit = async(e:any)=>{
         e.preventDefault()
+        setLoading(true);
+        toast.loading("Updating profile...");
         if ( !user_name || !profile_picture ) {
+            toast.dismiss();
+            toast.error("All Fields are required");
             return;
-          }
+        }
         try {
             const imageRef:StorageReference = ref(storage,`profiles/${Date.now()}`);
             if(!profile_picture) return 
@@ -114,7 +122,7 @@ const UpdateProfile = () => {
                downloadURL = await getDownloadURL(ref(storage,imageUpload.metadata.fullPath))
             else
             {
-              alert("Image Uploading failed");
+              toast.error("Image Uploading failed");
               return;
             }
             const url = serverUrl+"/api/user/"+userId 
@@ -123,32 +131,37 @@ const UpdateProfile = () => {
             }
             const headers = {"Content-Type":"application/json","Authorization":token }
             const response = await axios.put(url,postData,{headers});
+            toast.dismiss();
            if(response.status===200)
            {
-             alert("User Updated");
+             toast.success("User Updated");
+             setLoading(false);
              dispatch(login({user:response.data.user,token}));
-             
+             setUpdated(true);
            }
         } catch (error:any) {
-          alert(error.response.data.data)
+          setLoading(false);
+          toast.error(error.response.data.data)
         }
         
       }
 
   return (
-    <div className='py-10'>
+    <div className='py-10 dark:bg-gray-950 dark:text-white'>
+      <Toaster/>
         <h1 className='text-3xl  lg:mx-72 py-10 lg:text-4xl mx-4'>Update Profile</h1>
         <form onSubmit={handleSubmit} className='flex lg:mx-72 flex-col items-start justify-start space-y-2 mx-4'>
           <div className='flex items-center flex-col mx-auto'>
             <img 
               src={profile_picture_url} 
               className='h-32 w-32 rounded-full border-blue-100 border-4 my-2 shadow-lg lg:h-52 lg:w-52' alt="profile" />
-            <button onClick={handleChangeProfile} className='border-slate-200 mx-auto bg-slate-200 px-2 py-1 rounded-md '>Change Profile</button>
+            <button onClick={handleChangeProfile} className='border-slate-200 mx-auto bg-slate-200 px-2 py-1  my-4 rounded-sm dark:text-black '>Change Profile</button>
           </div>
             <input 
               type="text" 
               value={user_name}  
-              className='border border-slate-300 py-1 outline-none focus:ouline-none rounded-md px-1 w-full' 
+              className='border border-slate-300 py-2 outline-none focus:ouline-none rounded-md px-2 w-full dark:bg-slate-700
+              dark:border-none' 
               onChange={handleUserNameChange}  
             />
             {error && <small className='text-red-500'>{error}</small>}
@@ -158,7 +171,8 @@ const UpdateProfile = () => {
             <label htmlFor="bio" className='text-left'>Bio</label>
             <textarea 
                 name="bio"
-                className='border border-slate-200 outline-none rounded-md w-full '
+                className='border border-slate-200 outline-none rounded-md p-2 w-full dark:bg-slate-700
+                dark:border-none '
                 value= {bio}
                 onChange={(e)=>{if(bio.length<=100) setBio(e.target.value) }}
                 cols={40} rows={10}
@@ -168,9 +182,15 @@ const UpdateProfile = () => {
             
             <input type="file" onChange={handleFileChange} className='hidden' ref={imageBtnRef} />
             <div className='flex space-x-1'>
-
-            <input type="submit" className='btn-primary1' value="update" />
-            <button className='bg-slate-200 px-4 rounded-md' onClick={()=>{navigate("/")}} >Cancel</button>
+          {
+            updated? <button type='button' onClick={()=>{
+              navigate("/user/"+userId);
+            }} className='w-full lg:w-auto lg:px-10 mr-5 bg-black text-white py-2 border-none my-2 flex items-center justify-center dark:bg-blue-600 '>Preview Profile</button> :
+            <>
+            <input type="submit" disabled={loading} className='btn-primary1' value={loading?"Updating...":"Update"} />
+            <button disabled={loading} className='bg-slate-200 px-4 rounded-md dark:text-black' onClick={()=>{navigate("/")}} >Cancel</button>
+            </>
+          }
             </div>
         </form>
     </div>

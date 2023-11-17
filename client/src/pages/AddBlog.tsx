@@ -2,7 +2,7 @@ import {useRef,useState} from 'react'
 //@ts-ignore
 import {blogSchema} from './../utils/validationSchema.js'
 import {Formik,Form,Field} from 'formik'
-import {MdCancel} from 'react-icons/md'
+import {MdCancel, MdOutlineTerrain} from 'react-icons/md'
 import {AiOutlineCloudUpload} from 'react-icons/ai'
 
 import {storage} from '../firebase.ts'
@@ -15,6 +15,9 @@ import { useAppSelector } from '../app/hooks.ts'
 import { useNavigate } from 'react-router'
 
 import {blogCategories} from '../utils/data.ts'
+import { Toaster, toast } from 'react-hot-toast'
+import { BsEye, BsEyeFill } from 'react-icons/bs'
+import { FaImage } from "react-icons/fa6";
 
 type initialValuesType ={
     title:string
@@ -27,8 +30,11 @@ type initialValuesType ={
 }
 const AddBlog = () => {
     const token = useAppSelector((state)=>{return state.auth.token});
-    const [imageUrl, setImageUrl] = useState<string>("https://tinyurl.com/2b8um47r");
+    const [imageUrl, setImageUrl] = useState<string>("");
     const [image, setImage] = useState<File|null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
+    const [published,setPublished] = useState<boolean>(false);
+    const [blogId,setBlogId] = useState<string>("");
     const initialValues : initialValuesType = {
         title:"",
         content:"",
@@ -49,7 +55,8 @@ const AddBlog = () => {
     }
   
     const handleSubmit = async (values:any) => {
-      
+      setLoading(true);
+      toast.loading("Adding your post...")
       let downloadURL:string = ""
       if (image) {
         const imageRef = ref(storage, `blogs/${Date.now()}`);
@@ -57,7 +64,7 @@ const AddBlog = () => {
         if (imageUpload)
            downloadURL = await getDownloadURL(ref(storage, imageUpload.metadata.fullPath));
         else{
-          alert("Image Uploading failed")
+          toast.error("Image Uploading failed")
           return;
         }
       }
@@ -70,47 +77,42 @@ const AddBlog = () => {
         Authorization: `${token}`,
       };
       
-  
       const postData = {title,content,tags,image: downloadURL,category};
-  console.log(category)
       try {
         const url =  serverUrl+"/api/blog/post"; 
         const response = await axios.post(url,postData,{ headers });
         if(response.status===200)
         {
-          alert("Blog added");
-          console.log(response.data)
-          // navigate("/");
+          toast.dismiss();
+          toast.success("Added Successfully!");
+          setBlogId(response.data.data._id)
+          setPublished(true);
+          setLoading(false);
         }
       } catch (error:any) {
-        alert(error.response.data.data);
-        console.error('Error submitting the blog:', error);
+        setLoading(false);
+        toast.error(error.response.data.data);
       }
     };
   
   return (
     <div className='dark:bg-gray-950'>
-
+      <Toaster/>
     
     <div className="overflow-x-visible py-10 lg:mx-72 mx-5 dark:bg-gray-950 dark:text-white">
         <h1 className='text-3xl px-4 py-6 font-bold '> Add Blog </h1>
         
-              <div className={` mx-3 rounded-md h-44 bg-cover  shadow-lg bg-center flex items-end justify-center`}
-                    style={{backgroundImage:`url(${imageUrl})`}}
-                >
-
-        { imageUrl==="https://tinyurl.com/2b8um47r" ?  <button
-                    className='flex  items-center bg-slate-100 p-1 dark:text-black rounded-md'
-                    onClick={()=>{imageInputRef && imageInputRef.current && imageInputRef.current.click()}}>
-                        Upload Image&nbsp;<AiOutlineCloudUpload size={20}/> 
-                </button> :
-                <button
-                className='btn-primary1'
-                onClick={()=>{imageInputRef && imageInputRef.current && imageInputRef.current.click()}}>
-                    Change Image&nbsp;<AiOutlineCloudUpload size={20}/> 
-            </button> }
-               
+              <div className="rounded-md h-44 bg-cover lg:h-64  shadow-lg bg-center flex items-center dark:bg-slate-800 justify-center"
+                style={ imageUrl? {backgroundImage:`url(${imageUrl})`}: {} }
+              >
+                   {imageUrl===""? <FaImage size={100}/>:<></>}
                 </div>
+        
+                <button
+                className='btn-primary1 mt-2'
+                onClick={()=>{imageInputRef && imageInputRef.current && imageInputRef.current.click()}}>
+                Image&nbsp;<AiOutlineCloudUpload size={20}/> </button>
+            
         <Formik 
             initialValues={initialValues}
             onSubmit= {handleSubmit}
@@ -207,9 +209,24 @@ const AddBlog = () => {
             className='hidden'
           />
           <div className='lg:flex items-center justify-start'>
+          {
+              published ? <button type='button' onClick={()=>{navigate("/blog/"+blogId)}} className='w-full lg:w-auto lg:px-10 mr-5 bg-black text-white py-2 border-none my-2 flex items-center justify-center dark:bg-blue-600 '>
+                Preview <BsEyeFill/>
+              </button>:
+              <>
+               <button 
+              disabled={loading}
+              type="submit" 
+              className='w-full lg:w-auto lg:px-10 mr-5 bg-black text-white py-2 border-none my-2 flex items-center justify-center dark:bg-blue-600 ' 
+            > {loading?"Publishing...":"Publish"} 
+            </button>
 
-            <button type="submit" className='w-full lg:w-auto lg:px-10 mr-5 bg-black text-white py-2 border-none my-2 flex items-center justify-center dark:bg-blue-600 ' > Publish </button>
-            <button onClick={()=>{navigate("/")}} className='w-full text-black lg:w-auto lg:px-10 bg-slate-100 py-2 my-2'>Cancel</button>
+            <button 
+               disabled={loading}
+              onClick={()=>{navigate("/blog/explore")}} className='w-full text-black lg:w-auto lg:px-10 bg-slate-100 py-2 my-2'>Cancel</button>
+              </>
+          }
+           
           </div>
             </Form>
         ) }

@@ -11,7 +11,10 @@
     @apply bg-white text-slate-900 border border-slate-300 flex items-center gap-2 px-4 w-32 text-lg rounded-md cursor-pointer
 }
 .container-signup{
+    background-image: linear-gradient(0deg,#0009,#0009), url("/signup.jpg");
+    background-size: cover;
     @apply flex justify-center items-center h-[100vh] flex-col bg-slate-100
+    
 }
 .imageContainer{
     @apply h-24 w-24 rounded-full bg-[url('https://cdn4.iconfinder.com/data/icons/business-and-office-29/512/396-_profile__avatar__image__dp_-512.png')]

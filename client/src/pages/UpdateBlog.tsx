@@ -17,6 +17,8 @@ import { useNavigate } from 'react-router'
 import {blogCategories} from '../utils/data.ts'
 import { useParams } from 'react-router-dom'
 
+import { Toaster,toast } from 'react-hot-toast'
+
 type initialValuesType ={
     title:string
     content:string
@@ -41,6 +43,10 @@ const UpdateBlog = () => {
   
   const imageInputRef= useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
+
+  const [loading,setLoading] = useState<boolean>(false);
+  const [updated,setUpdated] = useState<boolean>(false);
+
   const fetchBlog = async()=>{
     try {
       const url =  serverUrl+"/api/blog/"+blogId; 
@@ -80,6 +86,8 @@ const UpdateBlog = () => {
     }
   
     const handleSubmit = async (values:any) => {
+      setLoading(true);
+      toast.loading("Updating...");
       let downloadURL:string = ""
       if (image) {
         const imageRef = ref(storage, `blogs/${Date.now()}`);
@@ -87,7 +95,7 @@ const UpdateBlog = () => {
         if (imageUpload)
            downloadURL = await getDownloadURL(ref(storage, imageUpload.metadata.fullPath));
         else{
-          alert("Image Uploading failed")
+          toast.error("Image Uploading failed");
           return;
         }
       }
@@ -106,25 +114,27 @@ const UpdateBlog = () => {
       try {
         const url =  serverUrl+"/api/blog/update/"+blogId; 
         const response = await axios.put(url,postData,{ headers });
+        toast.dismiss();
         if(response.status===200)
         {
-          alert("Blog Updated");
-          console.log(response.data)
-          // navigate("/");
+          toast.success("Blog Updated!");
+          setLoading(false);
+          setUpdated(true);
         }
       } catch (error:any) {
-        alert(error.response.data.data);
-        console.error('Error submitting the blog:', error);
+        toast.error(error.response.data.data);
+        setLoading(false);
       }
     };
   
   return (
-    <div className="overflow-x-visible">
+    <div className="overflow-x-visible dark:bg-gray-950 dark:text-white lg:px-72 py-10">
+      <Toaster/>
         <h1 className='text-3xl px-4 py-6 font-bold'> 
           Update Blog 
         </h1>
         <div 
-          className={` mx-3 rounded-md h-44 bg-cover  shadow-lg bg-center flex items-end justify-center`}
+          className={` mx-3 rounded-md h-44 bg-cover  shadow-lg bg-center flex items-end lg:h-64 justify-center`}
           style={{backgroundImage:`url(${imageUrl})`}}
         >
 
@@ -147,15 +157,19 @@ const UpdateBlog = () => {
             validationSchema={blogSchema}
         >
         { ({errors,setFieldValue,values})=>(
-            <Form className='px-2 h-auto'>
+            <Form className='px-2 h-auto '>
                 <div className="input flex flex-col items-start my-3">
                   <label className='text-md' htmlFor="title">Title</label>
-                  <Field value={values.title} className=' rounded-md focus:outline-none py-1 outline-none text-2xl w-full' type="text" name="title" placeholder="Enter Title"/>
+                  <Field 
+                  value={values.title} 
+                  className=' rounded-md focus:outline-none py-1 outline-none text-2xl w-full dark:bg-slate-800' 
+                  type="text" name="title" placeholder="Enter Title"/>
                   {errors.title && <small className=' text-red-700 rounded-md'>{errors.title}</small>}
                 </div>
 
                 <div className="input flex flex-col items-start my-3 ">
-                  <Field className='rounded-md py-1 w-full h-auto  focus:outline-none' as="textarea" cols={40} rows={7} name="content" placeholder="Enter Content"/>
+                  <Field 
+                  className='rounded-md py-1 w-full h-auto  focus:outline-none dark:bg-slate-800' as="textarea" cols={40} rows={7} name="content" placeholder="Enter Content"/>
                   <span className='text-sm' style={values.content.length>360?{color:"red"}:{color:"green"}}> { values.content.length } / 360 </span>
                   {errors.content && <small className=' text-red-700  rounded-md'>{errors.content}</small>}
                 </div>
@@ -166,7 +180,7 @@ const UpdateBlog = () => {
               <Field
                 as="select"
                 name="category"
-                className="border border-gray-300 w-full rounded-md p-1"
+                className="border border-gray-300 w-full rounded-md p-1 dark:bg-slate-800 py-2 dark:border-none"
               >
                 {blogCategories.map((e:string,i:number)=>{
                   return <option key={i} value={e.toLowerCase()}>{e}</option>
@@ -178,9 +192,9 @@ const UpdateBlog = () => {
               <div className="input flex flex-col items-start w-full my-2  h-auto">
 
               <label htmlFor="tags">Tags</label>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-2 my-2">
                 <Field
-                  className="border border-slate-300 rounded-md py-1 px-2 outline-black"
+                  className="border border-slate-300 rounded-md py-1 px-2 outline-black dark:bg-slate-800 dark:border-slate-900"
                   type="text"
                   name="tagsInput"
                   placeholder="Add Tags"
@@ -209,7 +223,7 @@ const UpdateBlog = () => {
                 </div>
                 <div className=' flex flex-wrap '>
                     {values.tags.map((tag,i) => (
-                    <div className='flex items-center m-1 rounded-full justify-center tagbox bg-slate-100 px-2 py-1' key={i}>
+                    <div className='flex items-center m-1 rounded-full justify-center tagbox bg-slate-100 px-2 py-1 dark:bg-slate-700' key={i}>
                     {tag}
                      <button  
                         className='mx-1' 
@@ -236,8 +250,23 @@ const UpdateBlog = () => {
             name="image" 
             className='hidden'
           />
-            <button type="submit" className='w-full bg-black text-white py-2 border-none my-2 flex items-center justify-center ' > Update </button>
-            <button onClick={()=>{navigate("/blog/"+blogId)}} className='w-full bg-slate-100 py-2 my-2'>Cancel</button>
+          <div className='lg:flex lg:space-x-1'>
+            {
+               updated? <button
+               type='button' onClick={()=>{navigate("/blog/"+blogId)}} className='w-full lg:w-auto lg:px-10 mr-5 bg-black text-white py-2 border-none my-2 flex items-center justify-center dark:bg-blue-600 '>Preview Blog</button>:
+               <>
+                 <button 
+            type="submit" 
+            disabled={loading}
+            className='w-full rounded-md bg-black text-white py-2 border-none my-2 flex items-center justify-center dark:bg-blue-500 dark:text-black ' 
+            > {loading?"Updating...":"Update"} </button>
+            <button 
+              disabled={loading}
+            onClick={()=>{navigate("/blog/"+blogId)}} className='w-full rounded-md bg-slate-100 py-2 my-2 dark:text-black dark:bg-slate-100'>Cancel</button>
+               </>
+            }
+          
+          </div>
             </Form>
         ) }
         </Formik>

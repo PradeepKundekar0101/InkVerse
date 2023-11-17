@@ -5,7 +5,7 @@ import { useAppSelector ,useAppDispatch} from "../app/hooks";
 import {logout} from '../app/slices/authSlice'
 import { BiMoon, BiSun } from "react-icons/bi";
 import { toggleMode } from "../app/slices/modeSlice";
-import { FcCancel } from "react-icons/fc";
+
 import { MdCancel, MdMenu } from "react-icons/md";
 
 const Navbar = () => {
@@ -18,7 +18,7 @@ const Navbar = () => {
   return (
     <nav className="w-full flex py-2 lg:py-4 px-3.5 justify-between items-center navbar dark:bg-slate-800">
       
-      <h1 className="text-3xl text-black dark:text-white">InkVerse</h1>
+      <h1 className="text-xl text-black dark:text-white font-mono">InkVerse</h1>
       
       {/* Desktop Navigation */}
       <ul className="list-none sm:flex hidden justify-end items-center  dark:text-white flex-1">
@@ -26,7 +26,7 @@ const Navbar = () => {
           <Link
             to={"/"}
             className={`font-poppins font-normal cursor-pointer text-[16px] ${
-              active === "home" ? "text-blue-900" : "text-dimWhite"
+              active === "home" ? "text-blue-900 dark:text-blue-400" : "text-dimWhite"
             } `}
             onClick={() => setActive("home")}
           >
@@ -111,6 +111,15 @@ const Navbar = () => {
               <Link to={"/blog/explore"}  className={` text-center font-medium cursor-pointer text-[16px] ${
                   active === "exploreblogs" ? "text-blue-800 dark:text-blue-200" : "text-dimWhite"
                 } `} > Explore Blogs </Link>
+           </li>
+
+           <li>
+                {
+                  mode === "light" ?
+                  <button onClick={ ()=>{setMode("dark");dispatch(toggleMode({mode:"dark"}))}} className="bg-slate-800 ml-3 flex items-center rounded-md py-1 px-4 text-white"> <BiMoon/> &nbsp; Dark </button>
+                  :
+                  <button onClick={ ()=>{setMode("light");dispatch(toggleMode({mode:"light"}))}} className="bg-slate-100 ml-3 flex items-center rounded-md py-1 px-4 text-black"> <BiSun/> &nbsp; Light</button>
+                }
            </li>
 
            <li onClick={()=>{setActive("postblog")}}>

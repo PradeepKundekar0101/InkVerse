@@ -39,6 +39,10 @@ export const getAllBlogs=async (req,res)=>{
                 else if(sort==="old")
                     blogs.sort({"createdAt":"asc"}).skip(skip).limit(limit);
             } 
+            else{
+                blogs.skip(skip).limit(limit);
+
+            }
             const finalData = await blogs;
             res.status(200).json({data:finalData,totalDocs:total});
            
@@ -211,7 +215,7 @@ export const deleteBlog = async(req,res)=>{
 
 export const getMostLiked = async(req,res)=>{
     try {
-       console.log("first")
+      
         const mostLikedBlog = await Blog.findOne().sort('-likes').exec();
         if (!mostLikedBlog) {
           return res.status(404).json({ error: 'No blogs found' });
