@@ -64,6 +64,7 @@ export const getBlogById = async(req,res)=>{
     try {
         const blogId = req.params.blogId;
         const blog =  await Blog.findById(blogId)
+        if(!blog) return res.status(404).json({data:"Blog Not Found"});
         res.status(200).json({data:blog});
     } catch (error) {
         res.status(500).json({data:error.message});
@@ -72,8 +73,11 @@ export const getBlogById = async(req,res)=>{
 
 export const getBlogByUserId = async(req,res)=>{
     try {
+        const pageNo = req.query.pageNo;
+        const limit= 5;
+        const skip = (pageNo-1) * 10;
         const userId = req.params.userId;
-        const blogs =  await Blog.find({author:userId})
+        const blogs =  await Blog.find({author:userId}).skip(skip).limit(limit);
         res.status(200).json({data:blogs});
     } catch (error) {
         res.status(500).json({data:error.message});
@@ -85,7 +89,7 @@ export const likeBlog = async( req,res)=>{
     try {
         const blogId = req.params.blogId;
         const blog = await Blog.findById(blogId);
-        if(!blog) res.status(404).json({data:"Blog not Found"});
+        if(!blog) return res.status(404).json({data:"Blog not Found"});
         blog.likes+=1;
         const updatedBlog = await blog.save();
         res.status(200).json({data:updatedBlog.likes})
@@ -97,7 +101,7 @@ export const dislikeBlog = async( req,res)=>{
     try {
         const blogId = req.params.blogId;
         const blog = await Blog.findById(blogId);
-        if(!blog) res.status(404).json({data:"Blog not Found"});
+        if(!blog) return res.status(404).json({data:"Blog not Found"});
         blog.likes-=1;
         const updatedBlog = await blog.save();
         res.status(200).json({data:updatedBlog.likes})
@@ -110,7 +114,8 @@ export const viewBlog = async( req,res)=>{
     try {
         const blogId = req.params.blogId;
         const blog = await Blog.findById(blogId);
-        if(!blog) res.status(404).json({data:"Blog not Found"});
+        if(!blog) return res.status(404).json({data:"Blog not Found"});
+        console.log(blog)
         if(!blog.views)
             blog.views=1;
         else 
@@ -126,7 +131,7 @@ export const getComments = async( req,res)=>{
     try {
         const blogId = req.params.blogId;
         const blog = await Blog.findById(blogId);
-        if(!blog) res.status(404).json({data:"Blog not Found"});
+        if(!blog) return res.status(404).json({data:"Blog not Found"});
         const commentsIdList = blog.comments;
         let result = [];
         for(const commentId of commentsIdList)
@@ -165,6 +170,7 @@ export const postComment = async(req,res)=>{
         blog.comments.push(saved._id);
         
         await blog.save();
+        console.log(saved)
         res.status(200).json({data:saved});
        
     } catch (error) {

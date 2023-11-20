@@ -7,7 +7,7 @@ const UserSchema = mongoose.Schema({
         require:true,
     },
     profile_picture:{
-        default:"https://shorturl.at/syBDS",
+        default:"https://www.shutterstock.com/image-vector/default-avatar-profile-icon-social-600nw-1677509740.jpg",
         type:String
     },
     email:{ 

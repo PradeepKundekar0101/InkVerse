@@ -55,6 +55,7 @@ const SignUp = () => {
         
         } catch (error:any)
         {
+          setLoading(false);
           toast.dismiss();
           if (error.response)  toast.error(error.response.data.message);
           else  toast.error('An unexpected error occurred. Please try again later.');

@@ -14,6 +14,7 @@ import UpdateBlog from './pages/UpdateBlog.js'
 import Layout from './pages/Layout.js'
 import CategoryBlog from './pages/CategoryBlog.js'
 import SearchBlog from './pages/Search.js'
+import NotFound from './pages/NotFound.js'
 
 const App = () => {
   const mode = useAppSelector ((state)=>{return state.mode.mode});
@@ -32,16 +33,18 @@ const App = () => {
         <Route path='/' element={<Layout/>}>
             <Route path='' element={<Home/>}/>
              <Route path='signin' element={!user?<SignIn/>:<Navigate to="/"/>}/>
-            <Route path='signup' element={<SignUp/>}/>
+            <Route path='signup' element={!user?<SignUp/>:<Navigate to="/"/>}/>
             <Route path='user/:userId' element={<Profile/>}/> 
             <Route path='user/update/:userId' element={<UpdateProfile/>}/> 
 
-            <Route path='blog/addblog' element={<AddBlog/>} />
+            <Route path='blog/addblog' element={user?<AddBlog/>:<Navigate to="/signin"/>} />
             <Route path='blog/explore' element={<AllBlogs/>} />
             <Route path='blog/:blogId' element={<SingleBlog/>} />
-            <Route path='blog/update/:blogId' element={<UpdateBlog/>} />
+            <Route path='blog/update/:blogId' element={user?<UpdateBlog/>:<Navigate to="/sigin"/>} />
             <Route path='blog/category/:blogCat' element={<CategoryBlog/>} />
             <Route path='blog/search/:search' element={<SearchBlog/>} />
+
+            <Route path='/notfound' element={<NotFound/>}/>
 
         </Route>
       ))  

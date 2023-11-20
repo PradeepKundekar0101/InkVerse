@@ -20,6 +20,7 @@ router.put("/dislike/:blogId",authenticateToken,dislikeBlog);
 router.get("/viewed/:blogId",viewBlog);
 
 router.get("/comments/:blogId",getComments);
+
 router.post("/comments/:blogId",authenticateToken,postComment);
 
 

@@ -8,13 +8,13 @@ import { useAppSelector } from '../app/hooks';
 import SingleBlogLoader from './Loaders/SingleBlogLoader';
 
 //Importing icons
-import {GrLinkPrevious} from 'react-icons/gr'
 import {FcLike} from 'react-icons/fc'
 import {AiOutlineHeart} from 'react-icons/ai'
 
 import DotMenu from '../components/DotMenu';
-import { BsBack } from 'react-icons/bs';
-import { BiLeftArrow, BiLeftArrowAlt } from 'react-icons/bi';
+
+import {  BiLeftArrowAlt } from 'react-icons/bi';
+import toast, { Toaster } from 'react-hot-toast';
 
 // import {FaShare} from 'react-icons/fa'
 const SingleBlog = () =>
@@ -41,7 +41,9 @@ const SingleBlog = () =>
     }
 
     const {blogId} = useParams<string>();
+
     // const [loading,setLoading] = useState<boolean>(true);
+    const [postingComment,setPostingComment] = useState<boolean>(false);
     const [user_name,setUserName] = useState<string>();
     const [profile_picture,setProfilePicture] = useState<string>();
     const [liked,setLiked] = useState<boolean>();
@@ -50,7 +52,7 @@ const SingleBlog = () =>
 
     const [comment,setComment] = useState<string>("");
     const [showModal,setShowModal] = useState<boolean>(false);
-    const [comments,setComments] = useState<Comment[]>();
+    const [comments,setComments] = useState<Comment[]>([]);
 
     const fetchBlog = async()=>{
         try {
@@ -58,7 +60,10 @@ const SingleBlog = () =>
             const res = await axios.get(url);
             setBlog(res.data.data);
         } catch (error:any) {
-            alert(error.response.data.data)
+            if(error.response.status === 404)
+                    navigate("/notfound");
+            
+            
         }
     }
     const fetchUser = async()=>{
@@ -83,6 +88,7 @@ const SingleBlog = () =>
         }
     }
     const incViewOfCurrentBlog = async()=>{
+        if(!blog) return;
         try {
             const url = `${serverUrl}/api/blog/viewed/${blogId}`
             await axios.get(url);
@@ -91,10 +97,10 @@ const SingleBlog = () =>
         }
     }
     useEffect(() => {
-        getComments();
-        checkLiked();
         fetchBlog();
+        checkLiked();
         incViewOfCurrentBlog()
+        getComments();
     }, [])
     useEffect(()=>{
         fetchUser();
@@ -137,25 +143,23 @@ const SingleBlog = () =>
 
     const addComment = async(e:FormEvent<HTMLFormElement>)=>{
         try {
+            setPostingComment(true);
             e.preventDefault();
             const cmt = comment;
             setComment("");
             const url = `${serverUrl}/api/blog/comments/${blogId}` 
             const headers={"Authorization":token,"Content-Type":"application/json"}
-            const response = await axios.post(url,{content:cmt},{headers})
-            if(response.status===200)
-            {
-                if(comments!==undefined)
-                    setComments([...comments,response.data.data].reverse());
-            }
-            console.log(comments)
+            await axios.post(url,{content:cmt},{headers})
+            getComments();
+            setPostingComment(false);
         } catch (error:any) {
-            console.log(error.response.data);
+            setPostingComment(false);
+            toast.error(error.response.data);
         }
     }
     const getComments = async ()=>{
         try {
-
+            
             const url = `${serverUrl}/api/blog/comments/${blogId}` 
             const response = await axios.get(url)
             if(response.status===200)
@@ -175,11 +179,11 @@ const SingleBlog = () =>
             const response = await axios.delete(url,{headers})
             if(response.status===200)
             {
-                alert("Deleted");
-                console.log(response.data)
+                toast.success("Deleted");
             }
+            
         } catch (error:any) {
-            console.log(error.response.data);
+            toast.error(error.response.data);
         }
     }
     //Load the Comments 
@@ -189,7 +193,7 @@ const SingleBlog = () =>
     
   return (
     <div className='dark:bg-gray-950'>
-      
+      <Toaster/>
        {showModal && (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center backdrop-blur-sm">
       <div className="modal flex flex-col items-center justify-center rounded-xl h-[200px] w-72 bg-slate-100 dark:bg-slate-700 dark:text-white shadow-xl z-10">
@@ -264,7 +268,7 @@ const SingleBlog = () =>
                 <p className='text-sm  lg:text-lg text-ellipsis overflow-hidden ... whitespace-pre-line '>{blog?.content}</p>
             </div>
     
-            <h1 className='text-2xl font-bold text-blue-950 dark:text-blue-300'>Comments</h1>
+            <h1 className='text-2xl font-bold text-blue-950 dark:text-blue-300'>Comments ({comments.length})</h1>
             <div className="addComment">
                     <form onSubmit={addComment}>
                         <textarea
@@ -273,13 +277,16 @@ const SingleBlog = () =>
                             cols={40} rows={10}
                             onChange={(e)=>{setComment(e.target.value)}} 
                             placeholder='Type your comment' />
-                        <button type='submit' className='py-1 px-4 bg-blue-700 my-3 text-white font-normal rounded-sm' >
-                            Post Comment
+                        <button disabled={postingComment} type='submit' className='py-1 px-4 bg-blue-700 my-3  text-white font-normal rounded-sm' >
+                            { postingComment? <h1 className='flex items-center'>  <img className=' w-4  h-4 mr-1' src='https://i.gifer.com/ZKZg.gif'/>Posting...</h1> : "Post Comment"}
                         </button>
                     </form>
                 </div>
     
-                <div className="displayComments w-full mx-1  ">
+                <div className="displayComments w-full mx-1 ">
+                    {
+                        comments.length===0? <h1 className="font-semibold">No Comments Yet</h1> :<></>
+                    }
                     {comments?.map((e,i)=>(
                        <div key={i} className="text-black p-4 flex dark:text-white max-w-lg ">
                          <img className="rounded-full h-8 w-8 mr-2 mt-1 " src={e.profile_picture}/>

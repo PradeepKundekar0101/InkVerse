@@ -2,7 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.hero-heading
+{
+    background-color: #FFDEE9;
+    background-image: linear-gradient(0deg, #FFDEE9 0%, #B5FFFC 100%);
+    
+    -webkit-text-fill-color: transparent;
+    -webkit-background-clip: text;
+}
 .btn-primary {
     @apply bg-blue-600 text-white uppercase px-4 py-1 rounded-sm flex items-center gap-x-1
     cursor-pointer

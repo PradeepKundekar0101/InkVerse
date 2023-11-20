@@ -10,6 +10,7 @@ import BlogCard from '../components/BlogCard';
 
 
 import ProfileLoader from './Loaders/ProfileLoader';
+import toast from 'react-hot-toast';
 type User = 
 {
   user_name:string
@@ -31,22 +32,25 @@ type Blog = {
 const Profile = () => {
     const {userId}  = useParams<Readonly<Params<string>>>();
     const [user,setUser] = useState<User|null>(null);
-    const [blogs,setBlogs] = useState<Blog[]|null>(null);
+    const [blogs,setBlogs] = useState<Blog[]>([]);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
 
     const loggedInUser = useAppSelector((state) => state.auth.user);
     const[ownAcc,setOwnAcc] = useState<boolean>(false);
 
     const navigate = useNavigate();
 
+    const [pageNo,setPageNo] = useState<number>(1);
+
     const fetchUser = async() => {
       try {
         const url = serverUrl+"/api/user/id/"+userId
         const res = await axios.get(url);
         setUser(res.data.user)
-      } catch (error){
-
+      } catch (error:any){
           setUser({user_name:"",email:"",profile_picture:"",_id:"",blogs:[],bio:''});
-          
+          toast.error(error.response.data);
       }
     }
     const handleEditClick = ()=>{
@@ -54,12 +58,18 @@ const Profile = () => {
     }
     const fetchBlogs =async()=>{
       try {
-        const url = serverUrl+"/api/blog/user/"+userId
+        const url = serverUrl+"/api/blog/user/"+userId+"?pageNo="+pageNo;
         const res = await axios.get(url);
-        setBlogs(res.data.data)
+        const newBlogs = res.data.data;
+        setBlogs(prevBlogs => [...prevBlogs, ...newBlogs]);
+        setPageNo(prevPage => prevPage + 1);
+        setHasMore(newBlogs.length > 0);
       } catch (error)
       {
         
+      }
+      finally{
+        setLoading(false);
       }
     }
     useEffect(() => {
@@ -70,7 +80,9 @@ const Profile = () => {
       if( loggedInUser && user && loggedInUser?._id===user?._id) setOwnAcc(true);
       console.log(user?.profile_picture)
     },[user])
-    
+
+
+  
   return (
     <div className='dark:bg-gray-950 dark:text-white  py-4'>
         {
@@ -115,6 +127,7 @@ const Profile = () => {
                   ))
                 
                 }
+                {loading && <p>Loading...</p>}
                 </div>
                 </div>
                    

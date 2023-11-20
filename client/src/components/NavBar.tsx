@@ -8,6 +8,7 @@ import { toggleMode } from "../app/slices/modeSlice";
 
 import { MdCancel, MdMenu } from "react-icons/md";
 
+
 const Navbar = () => {
   const [active, setActive] = useState("Home");
   const [toggle, setToggle] = useState(false);
@@ -16,9 +17,9 @@ const Navbar = () => {
   const [mode,setMode] = useState<string>(currentMode);
   const dispatch = useAppDispatch();
   return (
-    <nav className="w-full flex py-2 lg:py-4 px-3.5 justify-between items-center navbar dark:bg-slate-800">
+    <nav className="w-full flex py-2 lg:py-4 px-3.5 justify-between items-center navbar dark:bg-slate-800 z-50">
       
-      <h1 className="text-xl text-black dark:text-white font-mono">InkVerse</h1>
+      <h1 className="text-md text-black dark:text-white">INKVERSE</h1>
       
       {/* Desktop Navigation */}
       <ul className="list-none sm:flex hidden justify-end items-center  dark:text-white flex-1">
@@ -84,7 +85,9 @@ const Navbar = () => {
       </ul>
 
       {/* Mobile Navigation */}
-      <div className="sm:hidden flex flex-1 justify-end dark:bg-slate-800  items-center" >
+      <div
+       
+      className="sm:hidden flex flex-1 justify-end dark:bg-slate-800  items-center  z-50" >
         {
           toggle? <button onClick={()=>{setToggle(!toggle)}}>
             <MdCancel size={30} fill={ mode==="dark"? "#fff" : "#000"}/>
@@ -92,7 +95,6 @@ const Navbar = () => {
           <button onClick={()=>{setToggle(!toggle)}}> <MdMenu size={30} fill={ mode==="dark"? "#fff" : "#000"}/> </button>
         }
       
-
         {/* Sidebar */}
         <div
           className={`${
@@ -122,7 +124,7 @@ const Navbar = () => {
                 }
            </li>
 
-           <li onClick={()=>{setActive("postblog")}}>
+           <li onClick={()=>{setActive("postblog");setToggle(!toggle)}}>
               <Link to={"/blog/addblog"}  className={` text-center font-medium cursor-pointer text-[16px] ${
                   active === "postblog" ? "text-blue-800 dark:text-blue-200" : "text-dimWhite"
                 } `} > Post Blog </Link>
