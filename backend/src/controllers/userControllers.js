@@ -116,8 +116,6 @@ export const checkLiked = async(req,res)=>{
   try {
     const userId = req.params.userId;
     const blogId = req.params.blogId;
-    console.log(userId)
-    console.log(blogId)
     const user = await User.findById(userId);
     if(!user) return res.status(404).json({data:"User not Found"});
     let liked =false;

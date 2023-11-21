@@ -19,7 +19,7 @@ export const getAllBlogs=async (req,res)=>{
             let queryObject ={};
             const {category,sort,page} = req.query;
             if(category)  queryObject.category  = {$regex:category,$options:"i"}
-            const limit = 10;
+            const limit = 9;
             const skip = (page-1) * 10;
             
             let blogs = Blog.find(queryObject);
@@ -115,12 +115,13 @@ export const viewBlog = async( req,res)=>{
         const blogId = req.params.blogId;
         const blog = await Blog.findById(blogId);
         if(!blog) return res.status(404).json({data:"Blog not Found"});
-        console.log(blog)
+        
         if(!blog.views)
             blog.views=1;
         else 
             blog.views+=1;
         const updatedBlog = await blog.save();
+       
         res.status(200).json({data:updatedBlog.views})
     } catch (error) {
         res.status(500).json({data:error.message});
@@ -172,7 +173,7 @@ export const postComment = async(req,res)=>{
         blog.comments.push(saved._id);
         
         await blog.save();
-        console.log(saved)
+       
         res.status(200).json({data:saved});
        
     } catch (error) {
