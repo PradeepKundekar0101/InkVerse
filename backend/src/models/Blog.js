@@ -3,12 +3,12 @@ const BlogSchema = mongoose.Schema({
    title:{
     type:String,
     min:5,
-    max:50
+    max:100
    },
    content:{
     type:String,
     min:5,
-    max:255
+    max:1200
    },
    image:{
     type:String

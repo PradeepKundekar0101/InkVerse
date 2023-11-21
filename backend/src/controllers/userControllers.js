@@ -70,8 +70,7 @@ export const getUser =async (req,res)=>{
     const userId=  req.params.userId;
     const user = await User.findById(userId).select(['-password'])
     if(user) return res.status(200).json({ user,message:"User Found" })
-    res.status(200).json({ user,message:"User not found" })
-
+    res.status(404).json({ user,message:"User not found" })
   } catch (error) {
     console.log(error.message)
     res.status(500).json({ message:error.message })
@@ -117,13 +116,16 @@ export const checkLiked = async(req,res)=>{
   try {
     const userId = req.params.userId;
     const blogId = req.params.blogId;
+    console.log(userId)
+    console.log(blogId)
     const user = await User.findById(userId);
-    if(!user) res.status(404).json({data:"User not Found"});
+    if(!user) return res.status(404).json({data:"User not Found"});
     let liked =false;
     if(user.likes.has(blogId)) liked=true;
     res.status(200).json({data:liked});
     
   } catch (error) {
+  
     res.status(500).json({message:error.message});
   }
 }

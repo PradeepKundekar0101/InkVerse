@@ -5,7 +5,8 @@ export const addBlog =async (req,res)=>{
     const userId = req.user.userId;
     try {
         const blog = new Blog({...req.body,author:userId});
-        console.log(blog)
+        const userFound = await User.findById(userId);
+        if(!userFound) return res.status(404).json({data:"User not found"});
         const savedBlog = await blog.save();
          res.status(200).json({ data:savedBlog,message:"Saved!" })
     } catch (error) {
@@ -47,7 +48,6 @@ export const getAllBlogs=async (req,res)=>{
             res.status(200).json({data:finalData,totalDocs:total});
            
         } catch (error) {
-            console.log(error)
             res.status(500).json({data:error.message});
         }
 }
@@ -159,7 +159,9 @@ export const postComment = async(req,res)=>{
         const userId = req.user.userId;
         const blogId = req.params.blogId;
         const {content} = req.body;
-       
+        
+        const userFound = await User.findById(userId);
+        if(!userFound) return res.status(404).json({data:"User not found"});
         const newComment = new Comment({ author:userId,blogId,content })
         const saved = await newComment.save();
 
@@ -182,6 +184,8 @@ export const updateBlog = async(req,res)=>{
     try {
       const paramsBlogId = req.params.blogId;
       const tokenUserId = req.user.userId;
+      const userFound = await User.findById(req.user.userId);
+      if(!userFound) return res.status(404).json({data:"User not found"});
       const blog = await Blog.findById(paramsBlogId);
       if(!blog) res.status(404).json({data:"Blog not Found"});
       if(blog.author === tokenUserId)
@@ -206,6 +210,11 @@ export const deleteBlog = async(req,res)=>{
       if(!blog) res.status(404).json({data:"Blog not Found"});
       if(blog.author === tokenUserId)
       {
+        const blogFound = await Blog.findById(paramsBlogId);
+        for(const commentId of blogFound.comments)
+        {
+            await Comment.findByIdAndDelete(commentId);
+        }
         const deletedBlog = await Blog.findByIdAndDelete(paramsBlogId)
         res.status(200).json({ message:"Blog was deleted successfully",data:deletedBlog});
       }
@@ -213,7 +222,6 @@ export const deleteBlog = async(req,res)=>{
         res.status(401).json({data:"Not Allowed"});
       }
      } catch (error) {
-      
         res.status(500).json({data:"Error registering user "+error});
      }
   }

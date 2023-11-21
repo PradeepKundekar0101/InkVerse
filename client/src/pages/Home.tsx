@@ -74,7 +74,7 @@ const Home = () => {
           <motion.div className='inner-corousel flex py-7' drag="x" dragConstraints={{ right: 0, left: -width }}>
             {categories.map((blog, i) => (
               <motion.div key={i} className=' p-3 w-52 lg:p-6  lg:h-96 lg:w-72 '>
-                <img src={blog.img} alt="" className='w-100% h-[100%] w-[100%] object-fill rounded-lg pointer-events-none' />
+                <Link to={"/blog/category/"+blog.name} > <img src={blog.img} alt="" className='w-100% h-[100%] w-[100%] object-fill rounded-lg pointer-events-none' /> </Link>
                 <Link to={"/blog/category/"+blog.name} className=' m-1 text-center py-6' >{blog.name.toUpperCase()}</Link>
               </motion.div>
             ))}

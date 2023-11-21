@@ -34,7 +34,7 @@ const Profile = () => {
     const [user,setUser] = useState<User|null>(null);
     const [blogs,setBlogs] = useState<Blog[]>([]);
     const [loading, setLoading] = useState(false);
-    const [hasMore, setHasMore] = useState(true);
+
 
     const loggedInUser = useAppSelector((state) => state.auth.user);
     const[ownAcc,setOwnAcc] = useState<boolean>(false);
@@ -63,7 +63,7 @@ const Profile = () => {
         const newBlogs = res.data.data;
         setBlogs(prevBlogs => [...prevBlogs, ...newBlogs]);
         setPageNo(prevPage => prevPage + 1);
-        setHasMore(newBlogs.length > 0);
+       
       } catch (error)
       {
         

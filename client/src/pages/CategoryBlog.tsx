@@ -77,7 +77,7 @@ const CategoryBlog = () => {
                 :
             <div className='dark:bg-gray-950'>
                 <div 
-                        className='flex  mx-10 mb-10 h-56 lg:h-72 object-center justify-center flex-col items-center' 
+                        className='flex  mx-10 mb-10 h-56 lg:h-96 object-center justify-center flex-col items-center bg-cover bg-center' 
                         style={ blogCat ?  {backgroundImage:`linear-gradient(0deg,#0008,#0008), url(${catImageMap.get(blogCat)})`}:{}}>
                         <h1 className='text-white text-3xl font-semibold'>Blogs related to {blogCat}</h1>
                 </div>

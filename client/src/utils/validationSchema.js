@@ -13,9 +13,9 @@ export const blogSchema = yup.object().shape({
     .string()
     .required('Title is required')
     .min(3, 'Title must be at least 3 characters')
-    .max(40, 'Title must not exceed 40 characters'),
+    .max(100, 'Title must not exceed 40 characters'),
 
-  content: yup.string().required('Content is required').min(10, 'Content must be at least 10 characters').max(360,"Content must not exceed 360 characters"),
+  content: yup.string().required('Content is required').min(10, 'Content must be at least 10 characters').max(1200,"Content must not exceed 360 characters"),
 
   tags: yup
     .array()

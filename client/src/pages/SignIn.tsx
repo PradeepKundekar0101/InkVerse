@@ -20,7 +20,7 @@ const SignIn = () => {
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('');
    
-    const [error, setError] = useState<string>('');
+    // const [error,setE]÷ = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
   
     const dispatch = useDispatch();
@@ -112,10 +112,11 @@ const SignIn = () => {
 
             <button 
               type='submit' 
+              disabled={loading}
               onClick={handleSubmit}
-              className=' w-full py-2  text-white bg-blue-600 font-bold rounded-md '> Log In       
+              className=' w-full py-2  text-white bg-blue-600 font-bold rounded-md '> {loading?"Logging in ":"Login"}     
             </button>
-            {error && <p className="text-red-500">{error}</p>} 
+            {/* {error && <p className="text-red-500">{error}</p>}  */}
         <p className='text-slate-400 text-sm my-2'> ---- OR ----</p>
         <p>Sign In with</p>
         <button type='button' className='py-2 flex w-full  px-20 rounded-lg justify-center text-mdlg:w-full lg:mx-4  bg-slate-200 dark:text-white mx-10 text-black my-2 dark:bg-slate-700 items-center' onClick={googleAuth}>  <FcGoogle/> &nbsp; Google </button>

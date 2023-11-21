@@ -27,7 +27,7 @@ const Navbar = () => {
           <Link
             to={"/"}
             className={`font-poppins font-normal cursor-pointer text-[16px] ${
-              active === "home" ? "text-blue-900 dark:text-blue-400" : "text-dimWhite"
+              active === "home" ? "text-blue-900 dark:text-blue-300" : "text-dimWhite"
             } `}
             onClick={() => setActive("home")}
           >
@@ -37,13 +37,13 @@ const Navbar = () => {
 
           <li onClick={()=>{setActive("exploreblogs");}}>
               <Link to={"/blog/explore"}  className={` text-center font-medium cursor-pointer ml-3 text-[16px] ${
-                  active === "exploreblogs" ? "text-blue-800" : "text-dimWhite"
+                  active === "exploreblogs" ? "text-blue-800 dark:text-blue-300" : "text-dimWhite"
                 } `} > Explore Blogs </Link>
            </li>
 
         <li onClick={()=>{setActive("postblog")}}>
               <Link to={"/blog/addblog"}  className={` text-center ml-3  font-medium cursor-pointer text-[16px] ${
-                  active === "postblog" ? "text-blue-800" : "text-dimWhite"
+                  active === "postblog" ? "text-blue-800 dark:text-blue-300" : "text-dimWhite"
                 } `} > Post Blog </Link>
            </li>
 

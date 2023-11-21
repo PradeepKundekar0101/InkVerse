@@ -2,7 +2,7 @@ import {useRef,useState} from 'react'
 //@ts-ignore
 import {blogSchema} from './../utils/validationSchema.js'
 import {Formik,Form,Field} from 'formik'
-import {MdCancel, MdOutlineTerrain} from 'react-icons/md'
+import {MdCancel} from 'react-icons/md'
 import {AiOutlineCloudUpload} from 'react-icons/ai'
 
 import {storage} from '../firebase.ts'
@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router'
 
 import {blogCategories} from '../utils/data.ts'
 import { Toaster, toast } from 'react-hot-toast'
-import { BsEye, BsEyeFill } from 'react-icons/bs'
+import {  BsEyeFill } from 'react-icons/bs'
 import { FaImage } from "react-icons/fa6";
 
 type initialValuesType ={
@@ -90,6 +90,7 @@ const AddBlog = () => {
           setLoading(false);
         }
       } catch (error:any) {
+        toast.dismiss();
         setLoading(false);
         toast.error(error.response.data.data);
       }
@@ -129,6 +130,7 @@ const AddBlog = () => {
                 <div className="input flex flex-col items-start my-3 ">
                   {/* <label htmlFor="title">Content</label> */}
                   <Field className='rounded-md py-1  w-full  focus:outline-none dark:bg-gray-950' as="textarea" rows={10} name="content" placeholder="Enter Content"/>
+                  <span className='dark:text-white'>{values.content.length}/1200</span>
                   {errors.content && <small className=' text-red-700 dark:text-red-500'>{errors.content}</small>}
                 </div>
 

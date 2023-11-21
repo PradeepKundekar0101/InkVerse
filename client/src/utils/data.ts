@@ -6,6 +6,7 @@ export const blogCategories:string[] = [
     'Web Development',
     'Design',
     'Travel',
+    'Nature',
     'Food',
     'Health',
     'Fitness',
