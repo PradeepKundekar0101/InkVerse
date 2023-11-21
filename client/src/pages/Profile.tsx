@@ -78,7 +78,6 @@ const Profile = () => {
     }, [])
     useEffect(()=>{
       if( loggedInUser && user && loggedInUser?._id===user?._id) setOwnAcc(true);
-      console.log(user?.profile_picture)
     },[user])
 
 

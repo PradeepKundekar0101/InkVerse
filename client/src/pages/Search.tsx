@@ -8,6 +8,8 @@ import BlogCard from '../components/BlogCard';
 import AllBlogLoader from './Loaders/AllBlogLoader';
 import Pagination from '../components/Pagination';
 import SearchBlogForm from '../components/SearchBlogForm';
+
+import {  BiLeftArrowAlt } from 'react-icons/bi';
 const SearchBlog = () => {
     
     const { search } = useParams<string>();
@@ -62,10 +64,13 @@ const SearchBlog = () => {
                 
                   :
                   <div className='container mx-auto'>
+                    <Link className='text-lg  dark:text-white underline flex items-center pt-5' to={"/blog/explore"}> <BiLeftArrowAlt/> Back </Link>
                       <div>
                         <h1 className='text-3xl py-3 lg:py-10 text-center dark:text-white'>{blogs.length} Blogs found</h1>
-                        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4'>
                           <SearchBlogForm/>  
+                         
+                        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 pt-5'>
+
                             {blogs.length >0  && blogs.map((blog,ind)=>(
                               <BlogCard 
                               views={blog.views} 
@@ -80,7 +85,10 @@ const SearchBlog = () => {
                               ))
                             }
                             </div>
+                            {
+                              blogs.length===0?<></>:
                     <Pagination setPageNo={setPageNo} pageNo={pageNo} totalPages={Math.ceil(blogs.length/10)}/>
+                            }
                     </div>
                     </div>
                 :

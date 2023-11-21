@@ -91,7 +91,10 @@ const CategoryBlog = () => {
                     ))}
                     </div>
                 </div>
-        <Pagination setPageNo={setPageNo} totalPages={Math.ceil(blogs.length/10)} pageNo={pageNo}/>
+                {
+                    blogs.length!==0 ? 
+                    <Pagination setPageNo={setPageNo} totalPages={Math.ceil(blogs.length/10)} pageNo={pageNo}/>:<></>
+                }
         </div>
             
         }

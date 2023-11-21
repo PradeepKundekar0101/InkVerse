@@ -60,8 +60,10 @@ const AllBlogs = () => {
                         <BlogCard views={blog.views} blogId={blog._id} key={ind} category={blog.category} title={blog.title}  image={blog.image} likes={blog.likes} createdAt={blog.createdAt} />
                     ))}
                 </div>
-            
+                    {
+                        blogs.length==0 ?<></>:
                 <Pagination totalPages={totalPages} pageNo={pageNo} setPageNo={setPageNo}/>
+                    }
             </div>
         }
     </div>

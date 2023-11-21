@@ -59,11 +59,10 @@ const SingleBlog = () =>
             const url = `${serverUrl}/api/blog/${blogId}`
             const res = await axios.get(url);
             setBlog(res.data.data);
+            console.log(res.data.data);
         } catch (error:any) {
             if(error.response.status === 404)
                     navigate("/notfound");
-            
-            
         }
     }
     const fetchUser = async()=>{
@@ -88,10 +87,11 @@ const SingleBlog = () =>
         }
     }
     const incViewOfCurrentBlog = async()=>{
-        if(!blog) return;
+        
         try {
             const url = `${serverUrl}/api/blog/viewed/${blogId}`
             await axios.get(url);
+
         } catch (error) {
             console.error(error)
         }
@@ -99,8 +99,8 @@ const SingleBlog = () =>
     useEffect(() => {
         fetchBlog();
         checkLiked();
-        incViewOfCurrentBlog()
         getComments();
+        incViewOfCurrentBlog()
     }, [])
     useEffect(()=>{
         fetchUser();
@@ -108,6 +108,11 @@ const SingleBlog = () =>
 
     const likeBlog = async()=>{
         try {
+            if(!token)
+            {
+                toast.error("Login to like the blog");
+                return;
+            }
             setLiked(true);
             const blogUrl = `${serverUrl}/api/blog/like/${blogId}` 
             const headers={"Authorization":token,"Content-Type":"application/json"}
@@ -123,6 +128,11 @@ const SingleBlog = () =>
     }
     const dislikeBlog = async()=>{
         try {
+            if(!token)
+            {
+                toast.error("Login to Dislike");
+                return;
+            }
             setLiked(false);
             //DECREASE the likes count of the blog 
             const blogUrl = `${serverUrl}/api/blog/dislike/${blogId}` 
@@ -143,8 +153,13 @@ const SingleBlog = () =>
 
     const addComment = async(e:FormEvent<HTMLFormElement>)=>{
         try {
-            setPostingComment(true);
             e.preventDefault();
+            if(!token)
+            {
+                toast.error("Login to Add Comment");
+                return;
+            }
+            setPostingComment(true);
             const cmt = comment;
             setComment("");
             const url = `${serverUrl}/api/blog/comments/${blogId}` 

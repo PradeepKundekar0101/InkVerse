@@ -140,7 +140,7 @@ const UpdateProfile = () => {
            {
              toast.success("User Updated");
              setLoading(false);
-             console.log(response.data.user)
+    
              dispatch(login({user:response.data.user,token}));
              
            }

@@ -8,7 +8,7 @@ type PropsType={
 }
 const Pagination:React.FC<PropsType> = ({totalPages,setPageNo,pageNo}) => {
     const mode = useAppSelector((state)=>{return state.mode.mode});
-    console.log("Total Pages = "+totalPages)
+   
   return (
     
     <div className='pagination-btns flex justify-center py-10 items-center w-full mx-auto  '>

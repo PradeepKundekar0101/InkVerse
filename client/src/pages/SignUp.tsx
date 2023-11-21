@@ -20,8 +20,7 @@ const SignUp = () => {
     const [user_name,setUser_name] = useState<string>('');
     const [email,setEmail] = useState<string>('');
     const [password,setPassword] = useState<string>('');
-   
-    const [error, setError] = useState<string>('');
+  
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
     const [usernameError, setUsernameError] = useState<string | null>(null);
@@ -125,7 +124,7 @@ const SignUp = () => {
       if(!data.data.success) setUsernameError("this user name is already taken");
 
     } catch (error:any) {
-      alert(error.response.data.data)
+      toast.error(error.response.data.data)
     }
   };
   const debouncedCheckAvailability = debounce(checkAvailability, 500);
@@ -137,11 +136,12 @@ const SignUp = () => {
       setUsernameError("User name must be single word, No spaces allowed");
       else if(val.length>20)
       setUsernameError("User name must not exceed 20 characters");
-      else if(!/^[a-z0-9]+$/.test(val)) setError("User Name must contain only lowercase characters and numbers")
+      else if(!(/^[a-z0-9]+$/).test(val)) setUsernameError("User Name must contain only lowercase characters and numbers");
       else{
-            debouncedCheckAvailability(val);
+            
             setUsernameError(null)
           }
+        debouncedCheckAvailability(val);
    }
 
   return (
@@ -208,7 +208,7 @@ const SignUp = () => {
               disabled={loading}
               className=' w-full py-2  text-white bg-blue-600 font-bold rounded-md '>{ loading?"Creating...":"Sign Up"} 
             </button>
-            {error && <p className="text-red-500">{error}</p>} 
+            
         <p className='text-slate-400 text-sm my-2'> ---- OR ----</p>
         <p>Sign Up with</p>
         <button type="button" className='py-2 flex  px-20 rounded-lg justify-center text-xl lg:w-full lg:mx-4  items-center bg-slate-200 dark:text-white mx-10 text-black my-2 dark:bg-slate-700 ' onClick={handleGoogleSignUp}>  <FcGoogle/> Google </button>
