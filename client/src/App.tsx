@@ -15,8 +15,9 @@ import Layout from './pages/Layout.js'
 import CategoryBlog from './pages/CategoryBlog.js'
 import SearchBlog from './pages/Search.js'
 import NotFound from './pages/NotFound.js'
-
+ 6
 const App = () => {
+
   const mode = useAppSelector ((state)=>{return state.mode.mode});
   useEffect(() => {
       if(mode==="dark")
