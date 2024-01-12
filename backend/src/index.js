@@ -19,6 +19,9 @@ const connect = async()=>{
         console.log(error.message);
     }
 }
+app.get("/",(req,res)=>{
+    res.send("Hello from the Inkverse Server");
+})
 app.use("/api/user/",userRoute);
 app.use("/api/blog/",blogRoute);
 connect();
