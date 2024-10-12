@@ -1,8 +1,8 @@
 
 import { Link } from 'react-router-dom'
-import { useAppSelector } from "../app/hooks"
+// import { useAppSelector } from "../app/hooks"
 const Footer = () => {
-  const mode = useAppSelector((state)=>{return state.mode.mode})
+//   const mode = useAppSelector((state)=>{return state.mode.mode})
   return (
         <footer className="bg-white  shadow dark:bg-gray-900">
             <div className="w-full max-w-screen-xl mx-auto p-4 md:py-3">
