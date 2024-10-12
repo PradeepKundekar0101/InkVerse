@@ -10,7 +10,7 @@ const SearchBlogForm:React.FC = () => {
     <div>
          <form className='flex justify-center w-full' onSubmit={()=>{navigate("/blog/search/"+search)}}>
                 <div 
-                    className='bg-white rounded-full flex mx-4 lg:mx-28 items center py-1 w-full justify-between px-2 dark:bg-gray-800 '>
+                    className='bg-white rounded-full flex mx-4 lg:mx-28 items center py-2 w-full justify-between px-2 dark:bg-gray-800 '>
                     <input 
                         type="text" 
                         placeholder='Search by title or tags' 
